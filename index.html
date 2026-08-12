@@ -1,913 +1,771 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>استاد طراحی - تبدیل عکس به مراحل نقاشی</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#161411" />
+  <title>Drawing Master V2 — استاد طراحی از روی عکس</title>
   <style>
     :root{
-      --bg:#f4f1eb;
-      --card:#ffffff;
-      --ink:#222;
-      --muted:#6c6c6c;
-      --accent:#6a4e3b;
-      --accent2:#8c6a52;
-      --border:#dfd7cd;
-      --shadow:0 8px 24px rgba(0,0,0,.08);
-      --radius:18px;
+      --bg:#f2efe8; --paper:#fffdf8; --ink:#1d1a17; --muted:#746e67;
+      --line:#d8d1c7; --accent:#6d4d35; --soft:#eee7dc; --ok:#2f6b4f;
+      --warn:#8a5a23; --shadow:0 12px 38px rgba(39,29,20,.09);
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:Tahoma, sans-serif;
-      background:linear-gradient(180deg,#f7f4ef 0%, #efe8df 100%);
-      color:var(--ink);
+      margin:0; color:var(--ink); background:
+      radial-gradient(circle at 10% -10%,#fff 0,transparent 27%),
+      linear-gradient(180deg,#f7f4ee,#eee9e1);
+      font-family:Tahoma,Arial,sans-serif;
     }
-    .container{
-      max-width:1200px;
-      margin:0 auto;
-      padding:20px;
-    }
+    button,input,select{font:inherit}
+    .app{max-width:1240px;margin:auto;padding:16px 16px 42px}
     .hero{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:22px;
-      margin-bottom:18px;
+      background:rgba(255,253,248,.92); border:1px solid var(--line);
+      border-radius:24px; box-shadow:var(--shadow); padding:20px;
     }
-    h1{
-      margin:0 0 10px;
-      font-size:28px;
-      color:var(--accent);
+    .eyebrow{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.08em}
+    h1{margin:5px 0 8px;font-size:clamp(24px,5vw,40px)}
+    .lead{color:var(--muted);line-height:1.9;max-width:920px;font-size:14px}
+    .toolbar{
+      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px
     }
-    .sub{
-      color:var(--muted);
-      line-height:1.9;
-      font-size:15px;
+    .control{
+      background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px
     }
-    .controls{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:12px;
-      margin-top:18px;
-    }
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:16px;
-    }
-    label{
-      display:block;
-      font-weight:bold;
-      margin-bottom:8px;
-      color:#4f3c2f;
-    }
-    input[type="file"], select, input[type="range"]{
-      width:100%;
-    }
-    .btn-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:10px;
-    }
+    .control label{display:block;font-weight:800;font-size:13px;margin-bottom:8px}
+    .control input[type=file],.control select,.control input[type=range]{width:100%}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     button{
-      border:none;
-      border-radius:12px;
-      padding:12px 16px;
-      background:var(--accent);
-      color:#fff;
-      cursor:pointer;
-      font-size:14px;
-      font-weight:bold;
-      transition:.2s;
+      border:0;border-radius:13px;padding:11px 15px;background:var(--accent);
+      color:#fff;font-weight:800;cursor:pointer
     }
-    button:hover{background:var(--accent2)}
-    button.secondary{
-      background:#8a8a8a;
-    }
-    button:disabled{
-      background:#bfb8b1;
-      cursor:not-allowed;
-    }
+    button.secondary{background:#77716b}
+    button.ghost{background:#ebe5dc;color:#43382f}
+    button:disabled{opacity:.45;cursor:not-allowed}
     .status{
-      margin-top:12px;
-      padding:12px 14px;
-      background:#fff8ef;
-      border:1px solid #ead8bf;
-      border-radius:12px;
-      color:#674d33;
-      min-height:48px;
-      line-height:1.8;
-      font-size:14px;
+      margin-top:12px;border-radius:13px;padding:11px 13px;background:#fbf6ed;
+      border:1px solid #eadcc7;color:#634d36;line-height:1.7;font-size:13px
     }
-    .preview-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:18px;
-      margin-top:18px;
+    .status.ok{background:#eef8f2;border-color:#cfe5d8;color:#24533d}
+    .workspace{display:grid;grid-template-columns:360px 1fr;gap:16px;margin-top:16px}
+    .side,.maincard{
+      background:var(--paper);border:1px solid var(--line);border-radius:22px;
+      box-shadow:var(--shadow);padding:14px
     }
-    .original-wrap{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
+    .section-title{font-weight:900;margin-bottom:10px}
+    .imagebox{
+      position:relative;background:#eee9df;border:1px solid var(--line);
+      border-radius:16px;overflow:hidden;min-height:220px;display:grid;place-items:center
     }
-    .original-panel{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:16px;
+    .imagebox img{display:block;max-width:100%;height:auto}
+    .placeholder{color:#91877e;text-align:center;padding:26px;line-height:1.8}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .metric{border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff}
+    .metric b{display:block;font-size:12px;color:#473a30}
+    .metric span{display:block;margin-top:5px;color:var(--muted);font-size:12px}
+    .teacher{
+      margin-top:10px;padding:12px;border-radius:14px;background:#f7f1e8;
+      border:1px solid #e7d9c6;line-height:1.95;font-size:13px
     }
-    .stages{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:18px;
+    .stage-tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}
+    .tab{
+      min-width:112px;background:#eee8de;color:#473b31;border:1px solid #ded5c9;
+      padding:9px 10px;border-radius:12px
     }
-    .stage-card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stage-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:6px 0 10px}
+    .stage-head h2{margin:0;font-size:21px}
+    .stage-head p{margin:5px 0 0;color:var(--muted);line-height:1.8;font-size:13px}
+    .canvaswrap{
+      background:#ebe7df;border-radius:18px;border:1px solid var(--line);
+      overflow:auto;display:grid;place-items:center;min-height:480px
     }
-    .stage-title{
-      font-weight:bold;
-      color:var(--accent);
-      font-size:17px;
+    canvas{display:block;max-width:100%;height:auto;background:#fff}
+    .stage-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+    .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-left:5px;vertical-align:-1px}
+    .d1{background:#8f785e}.d2{background:#b8aa97}.d3{background:#3c342d}
+    .footer{
+      margin-top:16px;color:var(--muted);font-size:12px;line-height:1.9;text-align:center
     }
-    .stage-desc{
-      color:var(--muted);
-      line-height:1.8;
-      font-size:14px;
-      min-height:56px;
+    .hidden{display:none!important}
+    @media(max-width:920px){
+      .toolbar{grid-template-columns:1fr 1fr}
+      .workspace{grid-template-columns:1fr}
     }
-    .canvas-wrap{
-      background:#fafafa;
-      border:1px solid #ddd;
-      border-radius:14px;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:220px;
-    }
-    canvas{
-      display:block;
-      width:100%;
-      height:auto;
-      background:white;
-    }
-    .footer-note{
-      margin-top:16px;
-      color:var(--muted);
-      line-height:1.9;
-      font-size:14px;
-    }
-    .inline{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .small{
-      font-size:13px;
-      color:var(--muted);
-    }
-    .pill{
-      display:inline-block;
-      padding:4px 10px;
-      border-radius:999px;
-      background:#f2ebe2;
-      border:1px solid var(--border);
-      font-size:12px;
-      color:#6b5544;
-    }
-    @media (max-width:700px){
-      h1{font-size:23px}
-      .container{padding:14px}
+    @media(max-width:560px){
+      .toolbar{grid-template-columns:1fr}
+      .app{padding:10px 10px 30px}
+      .hero,.side,.maincard{border-radius:18px}
+      .canvaswrap{min-height:340px}
+      .metrics{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <section class="hero">
-      <h1>استاد طراحی - تبدیل عکس به مراحل نقاشی مدادی</h1>
-      <div class="sub">
-        این نسخه‌ی اول به‌صورت کامل در مرورگر کار می‌کند. شما عکس را با دوربین گوشی یا از گالری وارد می‌کنید،
-        و برنامه آن را به 5 مرحله‌ی طراحی مدادی تبدیل می‌کند؛ از فرم‌های درشت تا طرح نهایی.
-      </div>
+<div class="app">
+  <section class="hero">
+    <div class="eyebrow">DRAWING MASTER V2 · ON-DEVICE GUIDE</div>
+    <h1>استاد طراحی از روی عکس</h1>
+    <div class="lead">
+      نسخه ۲ ابتدا ساختار واقعی عکس را تحلیل می‌کند و سپس نقاشی را مثل کلاس طراحی
+      از «Construction» تا «Final Pencil» می‌سازد. برای انسان، نقاط واقعی صورت و بدن
+      مبنای خطوط آموزشی هستند؛ نه یک بیضی و خطوط ثابت از پیش‌تعریف‌شده.
+    </div>
 
-      <div class="controls">
-        <div class="card">
-          <label for="imageInput">انتخاب عکس یا گرفتن عکس با گوشی</label>
-          <input id="imageInput" type="file" accept="image/*" capture="environment">
-          <div class="small" style="margin-top:8px;">
-            در موبایل می‌توانی مستقیم دوربین را باز کنی.
-          </div>
+    <div class="toolbar">
+      <div class="control">
+        <label>عکس / دوربین گوشی</label>
+        <input id="fileInput" type="file" accept="image/*" capture="environment" />
+      </div>
+      <div class="control">
+        <label>تمرکز آموزش</label>
+        <select id="focus">
+          <option value="auto">خودکار</option>
+          <option value="portrait">پرتره / صورت</option>
+          <option value="figure">فیگور / بدن</option>
+          <option value="generic">سوژه عمومی</option>
+        </select>
+      </div>
+      <div class="control">
+        <label>جزئیات مرحله نهایی <span id="detailText">72</span>%</label>
+        <input id="detail" type="range" min="35" max="100" value="72" />
+      </div>
+      <div class="control">
+        <label>کاغذ آموزشی</label>
+        <select id="paper">
+          <option value="white">سفید</option>
+          <option value="warm" selected>گرم</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="analyzeBtn" disabled>تحلیل و ساخت ۵ مرحله</button>
+      <button id="downloadBtn" class="secondary" disabled>ذخیره مرحله فعلی</button>
+      <button id="clearBtn" class="ghost">پاک کردن</button>
+    </div>
+    <div id="status" class="status">در حال آماده‌سازی موتور تشخیص چهره و بدن…</div>
+  </section>
+
+  <section class="workspace">
+    <aside class="side">
+      <div class="section-title">عکس مرجع</div>
+      <div id="imgBox" class="imagebox"><div class="placeholder">یک عکس انتخاب کن.<br>برای پرتره، عکس واضح با صورت نسبتاً بزرگ بهترین نتیجه را می‌دهد.</div></div>
+
+      <div class="section-title" style="margin-top:14px">تحلیل استاد</div>
+      <div id="metrics" class="metrics">
+        <div class="metric"><b>نوع سوژه</b><span>—</span></div>
+        <div class="metric"><b>چهره</b><span>—</span></div>
+        <div class="metric"><b>بدن</b><span>—</span></div>
+        <div class="metric"><b>زاویه خط چشم</b><span>—</span></div>
+        <div class="metric"><b>عرض دهان / صورت</b><span>—</span></div>
+        <div class="metric"><b>نسبت صورت</b><span>—</span></div>
+      </div>
+      <div id="teacher" class="teacher">پس از تحلیل عکس، اینجا توضیح مخصوص همان تصویر نمایش داده می‌شود.</div>
+    </aside>
+
+    <main class="maincard">
+      <div id="tabs" class="stage-tabs"></div>
+      <div class="stage-head">
+        <div>
+          <h2 id="stageTitle">مرحله ۱ — Construction</h2>
+          <p id="stageDesc">خطوط سازنده، تناسبات و محورهای اصلی.</p>
         </div>
-
-        <div class="card">
-          <label for="detailRange">میزان جزئیات</label>
-          <input id="detailRange" type="range" min="1" max="100" value="60">
-          <div class="inline" style="margin-top:8px;">
-            <span class="pill">کم</span>
-            <span id="detailValue" class="pill">60</span>
-            <span class="pill">زیاد</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <label for="modeSelect">نوع خروجی</label>
-          <select id="modeSelect">
-            <option value="balanced">متعادل</option>
-            <option value="soft">نرم و آموزشی</option>
-            <option value="sharp">دقیق و پرجزئیات</option>
-          </select>
-          <div class="small" style="margin-top:8px;">
-            برای انسان معمولاً حالت «متعادل» یا «نرم» بهتر است.
-          </div>
-        </div>
+        <span id="stageBadge" style="font-size:12px;color:var(--muted)">1 / 5</span>
       </div>
-
-      <div class="btn-row">
-        <button id="generateBtn" disabled>تولید مراحل نقاشی</button>
-        <button id="downloadAllBtn" class="secondary" disabled>دانلود همه مراحل</button>
-        <button id="clearBtn" class="secondary">پاک کردن</button>
+      <div class="canvaswrap"><canvas id="stageCanvas"></canvas></div>
+      <div class="legend">
+        <span><i class="dot d1"></i>خط ساخت</span>
+        <span><i class="dot d2"></i>راهنمای تناسب</span>
+        <span><i class="dot d3"></i>خط نهایی</span>
       </div>
-
-      <div id="status" class="status">هنوز عکسی انتخاب نشده است.</div>
-    </section>
-
-    <section class="preview-grid">
-      <div class="original-panel">
-        <div class="stage-title">عکس اصلی</div>
-        <div class="stage-desc">این تصویر مرجع شما برای تمرین طراحی است.</div>
-        <div class="canvas-wrap">
-          <canvas id="originalCanvas"></canvas>
-        </div>
+      <div class="stage-actions">
+        <button id="prevBtn" class="ghost">مرحله قبل</button>
+        <button id="nextBtn">مرحله بعد</button>
       </div>
+    </main>
+  </section>
 
-      <div class="stages" id="stagesContainer"></div>
-
-      <div class="footer-note">
-        <strong>نکته:</strong>
-        این نسخه‌ی اول کاملاً محلی (Local) است و از هوش مصنوعی ابری استفاده نمی‌کند؛
-        بنابراین خروجی‌ها بر پایه‌ی پردازش تصویر، خطوط، کنتراست، تُن و فرم‌ها تولید می‌شوند.
-        در نسخه‌ی بعدی می‌توانیم تشخیص بهتر چهره، راهنمای نسبت‌ها، تقسیم‌بندی فرم صورت، و توضیح آموزشی دقیق‌تر اضافه کنیم.
-      </div>
-    </section>
+  <div class="footer">
+    پردازش تصویر و inference روی دستگاه انجام می‌شود. کتابخانه و مدل‌های MediaPipe در اولین اجرا از اینترنت بارگذاری می‌شوند.
   </div>
+</div>
 
-  <script>
-    const imageInput = document.getElementById('imageInput');
-    const generateBtn = document.getElementById('generateBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const downloadAllBtn = document.getElementById('downloadAllBtn');
-    const statusEl = document.getElementById('status');
-    const originalCanvas = document.getElementById('originalCanvas');
-    const stagesContainer = document.getElementById('stagesContainer');
-    const detailRange = document.getElementById('detailRange');
-    const detailValue = document.getElementById('detailValue');
-    const modeSelect = document.getElementById('modeSelect');
+<script type="module">
+import {
+  FaceLandmarker,
+  PoseLandmarker,
+  FilesetResolver
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/+esm";
 
-    let loadedImage = null;
-    let stageCanvases = [];
+const $ = s => document.querySelector(s);
+const fileInput = $("#fileInput");
+const analyzeBtn = $("#analyzeBtn");
+const downloadBtn = $("#downloadBtn");
+const clearBtn = $("#clearBtn");
+const statusEl = $("#status");
+const imgBox = $("#imgBox");
+const metricsEl = $("#metrics");
+const teacherEl = $("#teacher");
+const detail = $("#detail");
+const detailText = $("#detailText");
+const focusSel = $("#focus");
+const paperSel = $("#paper");
+const canvas = $("#stageCanvas");
+const ctx = canvas.getContext("2d", {willReadFrequently:true});
+const tabsEl = $("#tabs");
+const titleEl = $("#stageTitle");
+const descEl = $("#stageDesc");
+const badgeEl = $("#stageBadge");
+const prevBtn = $("#prevBtn");
+const nextBtn = $("#nextBtn");
 
-    const stageDefinitions = [
-      {
-        title: 'مرحله 1 - اسکلت اولیه و فرم‌های درشت',
-        desc: 'ابتدا فقط فرم‌های خیلی مهم، مرزهای اصلی و ساختار کلی را بکش. هنوز وارد جزئیات نشو و خطوط را کمرنگ بگیر.'
-      },
-      {
-        title: 'مرحله 2 - فرم‌های اصلی و نسبت‌ها',
-        desc: 'در این مرحله حجم‌های اصلی را کامل‌تر کن. مرزهای بزرگ، تناسبات و محل کلی اجزا را دقیق‌تر مشخص کن.'
-      },
-      {
-        title: 'مرحله 3 - کانتورهای مهم',
-        desc: 'حالا مرزهای مهم‌تر و خط‌های شاخص را اضافه کن. این مرحله ستون اصلی طراحی تو است.'
-      },
-      {
-        title: 'مرحله 4 - جزئیات و راهنمای سایه',
-        desc: 'جزئیات اصلی و نواحی تیرگی/روشنی را وارد کن. هنوز سایه‌ها را سبک و قابل کنترل نگه دار.'
-      },
-      {
-        title: 'مرحله 5 - طراحی مدادی نهایی',
-        desc: 'در پایان، با حفظ فرم‌ها، جزئیات را کامل کن و طراحی را به حالت نهایی مدادی نزدیک کن.'
-      }
-    ];
+let faceLandmarker = null;
+let poseLandmarker = null;
+let sourceImg = null;
+let faceResult = null;
+let poseResult = null;
+let stages = [];
+let currentStage = 0;
+let sourceCanvas = document.createElement("canvas");
+let sourceCtx = sourceCanvas.getContext("2d",{willReadFrequently:true});
 
-    detailRange.addEventListener('input', () => {
-      detailValue.textContent = detailRange.value;
-    });
+const STAGE_META = [
+  ["مرحله ۱ — Construction","بیضی/فرم سر، محور صورت، خط چشم‌ها، ابرو، عرض بینی، اندازه دهان و ژست اصلی بدن."],
+  ["مرحله ۲ — Block-in","فرم‌های اصلی به کانتورهای ساده تبدیل می‌شوند؛ چشم، بینی، لب، فک و حجم‌های بزرگ بدن دقیق‌تر می‌شوند."],
+  ["مرحله ۳ — Refined Line","خطوط واقعی چهره و سوژه تمیزتر می‌شوند و جزئیات مهم بدون سایه‌پردازی سنگین اضافه می‌شوند."],
+  ["مرحله ۴ — Light & Shadow","ارزش‌های روشن و تیره به چند توده‌ی قابل طراحی تقسیم می‌شوند تا سایه‌گذاری کنترل‌شده باشد."],
+  ["مرحله ۵ — Final Pencil","کانتور، جزئیات و تون‌ها با هم ترکیب می‌شوند تا طرح مدادی به عکس اصلی نزدیک شود."]
+];
 
-    imageInput.addEventListener('change', handleImageUpload);
-    generateBtn.addEventListener('click', generateStages);
-    clearBtn.addEventListener('click', clearAll);
-    downloadAllBtn.addEventListener('click', downloadAllStages);
+const FACE_OVAL = [10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109];
+const LEFT_EYE = [33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246];
+const RIGHT_EYE = [362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398];
+const LEFT_BROW = [70,63,105,66,107,55,65,52,53,46];
+const RIGHT_BROW = [336,296,334,293,300,285,295,282,283,276];
+const OUTER_LIPS = [61,146,91,181,84,17,314,405,321,375,291,308,324,318,402,317,14,87,178,88,95,61];
+const INNER_LIPS = [78,95,88,178,87,14,317,402,318,324,308,291,375,321,405,314,17,84,181,91,146,61];
+const NOSE_LINE = [168,6,197,195,5,4,1,2];
+const NOSE_BASE = [98,97,2,326,327];
+const POSE_EDGES = [
+  [11,12],[11,13],[13,15],[12,14],[14,16],
+  [11,23],[12,24],[23,24],[23,25],[25,27],[27,29],[29,31],
+  [24,26],[26,28],[28,30],[30,32]
+];
 
-    createStageCards();
+detail.oninput = () => detailText.textContent = detail.value;
 
-    function createStageCards() {
-      stagesContainer.innerHTML = '';
-      stageCanvases = [];
+function setStatus(text, ok=false){
+  statusEl.textContent = text;
+  statusEl.className = "status" + (ok ? " ok" : "");
+}
 
-      stageDefinitions.forEach((stage, index) => {
-        const card = document.createElement('div');
-        card.className = 'stage-card';
+async function initModels(){
+  try{
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    );
 
-        const title = document.createElement('div');
-        title.className = 'stage-title';
-        title.textContent = stage.title;
-
-        const desc = document.createElement('div');
-        desc.className = 'stage-desc';
-        desc.textContent = stage.desc;
-
-        const canvasWrap = document.createElement('div');
-        canvasWrap.className = 'canvas-wrap';
-
-        const canvas = document.createElement('canvas');
-        canvas.id = `stageCanvas${index + 1}`;
-
-        canvasWrap.appendChild(canvas);
-
-        const btnRow = document.createElement('div');
-        btnRow.className = 'btn-row';
-
-        const downloadBtn = document.createElement('button');
-        downloadBtn.className = 'secondary';
-        downloadBtn.textContent = 'دانلود این مرحله';
-        downloadBtn.disabled = true;
-        downloadBtn.addEventListener('click', () => {
-          downloadCanvas(canvas, `drawing_stage_${index + 1}.png`);
-        });
-
-        btnRow.appendChild(downloadBtn);
-        card.appendChild(title);
-        card.appendChild(desc);
-        card.appendChild(canvasWrap);
-        card.appendChild(btnRow);
-
-        stagesContainer.appendChild(card);
-
-        stageCanvases.push({
-          canvas,
-          downloadBtn,
-          title: stage.title,
-          desc: stage.desc
-        });
+    setStatus("در حال بارگذاری مدل دقیق چهره…");
+    try{
+      faceLandmarker = await FaceLandmarker.createFromOptions(vision,{
+        baseOptions:{
+          modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task",
+          delegate:"GPU"
+        },
+        runningMode:"IMAGE",
+        numFaces:3,
+        minFaceDetectionConfidence:.45,
+        minFacePresenceConfidence:.45,
+        outputFaceBlendshapes:false,
+        outputFacialTransformationMatrixes:true
+      });
+    }catch(err){
+      console.warn("GPU face failed, retrying CPU",err);
+      faceLandmarker = await FaceLandmarker.createFromOptions(vision,{
+        baseOptions:{
+          modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task",
+          delegate:"CPU"
+        },
+        runningMode:"IMAGE",
+        numFaces:3,
+        minFaceDetectionConfidence:.45,
+        minFacePresenceConfidence:.45,
+        outputFaceBlendshapes:false,
+        outputFacialTransformationMatrixes:true
       });
     }
 
-    function updateStatus(message) {
-      statusEl.textContent = message;
-    }
-
-    function handleImageUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const img = new Image();
-        img.onload = function() {
-          loadedImage = img;
-          drawImageToCanvas(img, originalCanvas, 1200);
-          generateBtn.disabled = false;
-          updateStatus('عکس با موفقیت بارگذاری شد. حالا روی «تولید مراحل نقاشی» بزن.');
-        };
-        img.src = evt.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function clearAll() {
-      loadedImage = null;
-      generateBtn.disabled = true;
-      downloadAllBtn.disabled = true;
-      imageInput.value = '';
-      clearCanvas(originalCanvas);
-
-      stageCanvases.forEach(s => {
-        clearCanvas(s.canvas);
-        s.downloadBtn.disabled = true;
+    setStatus("در حال بارگذاری مدل ژست بدن…");
+    try{
+      poseLandmarker = await PoseLandmarker.createFromOptions(vision,{
+        baseOptions:{
+          modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task",
+          delegate:"GPU"
+        },
+        runningMode:"IMAGE",
+        numPoses:2,
+        minPoseDetectionConfidence:.4,
+        minPosePresenceConfidence:.4,
+        outputSegmentationMasks:false
       });
-
-      updateStatus('همه‌چیز پاک شد. یک عکس جدید انتخاب کن.');
+    }catch(err){
+      console.warn("GPU pose failed, retrying CPU",err);
+      poseLandmarker = await PoseLandmarker.createFromOptions(vision,{
+        baseOptions:{
+          modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task",
+          delegate:"CPU"
+        },
+        runningMode:"IMAGE",
+        numPoses:2,
+        minPoseDetectionConfidence:.4,
+        minPosePresenceConfidence:.4,
+        outputSegmentationMasks:false
+      });
     }
+    setStatus("موتور استاد آماده است. عکس را انتخاب کن.",true);
+    if(sourceImg) analyzeBtn.disabled=false;
+  }catch(err){
+    console.error(err);
+    setStatus("بارگذاری مدل هوشمند ناموفق بود. اتصال اینترنت را برای اولین اجرا بررسی کن. حالت عمومی تصویر همچنان قابل استفاده است.");
+    if(sourceImg) analyzeBtn.disabled=false;
+  }
+}
+initModels();
 
-    function clearCanvas(canvas) {
-      const ctx = canvas.getContext('2d');
-      canvas.width = 1;
-      canvas.height = 1;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+fileInput.addEventListener("change", e=>{
+  const file = e.target.files?.[0];
+  if(!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload=()=>{
+    sourceImg=img;
+    imgBox.innerHTML="";
+    const preview=img.cloneNode();
+    preview.src=url;
+    imgBox.appendChild(preview);
+    analyzeBtn.disabled=false;
+    setStatus(faceLandmarker ? "عکس آماده است. «تحلیل و ساخت ۵ مرحله» را بزن." : "عکس آماده است؛ مدل هوشمند هنوز در حال بارگذاری است.");
+  };
+  img.src=url;
+});
+
+analyzeBtn.addEventListener("click", analyzeAndBuild);
+clearBtn.addEventListener("click", clearAll);
+downloadBtn.addEventListener("click", downloadCurrent);
+prevBtn.addEventListener("click",()=>showStage(Math.max(0,currentStage-1)));
+nextBtn.addEventListener("click",()=>showStage(Math.min(4,currentStage+1)));
+
+function clearAll(){
+  sourceImg=null; faceResult=null; poseResult=null; stages=[]; currentStage=0;
+  fileInput.value="";
+  imgBox.innerHTML='<div class="placeholder">یک عکس انتخاب کن.<br>برای پرتره، عکس واضح با صورت نسبتاً بزرگ بهترین نتیجه را می‌دهد.</div>';
+  analyzeBtn.disabled=true; downloadBtn.disabled=true;
+  canvas.width=1;canvas.height=1;ctx.clearRect(0,0,1,1);
+  metricsEl.querySelectorAll("span").forEach(s=>s.textContent="—");
+  teacherEl.textContent="پس از تحلیل عکس، اینجا توضیح مخصوص همان تصویر نمایش داده می‌شود.";
+  tabsEl.innerHTML="";
+  setStatus(faceLandmarker ? "موتور آماده است. عکس جدید انتخاب کن." : "در انتظار مدل…");
+}
+
+async function analyzeAndBuild(){
+  if(!sourceImg) return;
+  analyzeBtn.disabled=true;
+  setStatus("۱/۳ — در حال آماده‌سازی تصویر…");
+  await nextPaint();
+
+  fitSource(sourceImg, 1300);
+
+  setStatus("۲/۳ — در حال تحلیل هندسه صورت و بدن…");
+  await nextPaint();
+
+  faceResult=null;poseResult=null;
+  try{ if(faceLandmarker) faceResult=faceLandmarker.detect(sourceCanvas); }catch(e){console.warn(e)}
+  try{ if(poseLandmarker) poseResult=poseLandmarker.detect(sourceCanvas); }catch(e){console.warn(e)}
+
+  setStatus("۳/۳ — استاد در حال ساخت مراحل طراحی…");
+  await nextPaint();
+
+  const requestedFocus = focusSel.value;
+  const face = requestedFocus === "generic" ? null : bestFace();
+  const pose = requestedFocus === "portrait" || requestedFocus === "generic" ? null : bestPose();
+
+  stages = [
+    buildConstruction(face,pose),
+    buildBlockIn(face,pose),
+    buildRefined(face,pose),
+    buildValues(face,pose),
+    buildFinal(face,pose)
+  ];
+
+  updateAnalysis(face,pose);
+  buildTabs();
+  showStage(0);
+  analyzeBtn.disabled=false;
+  downloadBtn.disabled=false;
+  setStatus("۵ مرحله ساخته شد. از مرحله ۱ شروع کن و یکی‌یکی جلو برو.",true);
+}
+
+function fitSource(img,maxSide){
+  const scale=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+  sourceCanvas.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));
+  sourceCanvas.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+  sourceCtx.drawImage(img,0,0,sourceCanvas.width,sourceCanvas.height);
+}
+
+function bestFace(){
+  const faces=faceResult?.faceLandmarks||[];
+  if(!faces.length) return null;
+  return faces.map(lm=>({lm,area:faceBox(lm).w*faceBox(lm).h})).sort((a,b)=>b.area-a.area)[0].lm;
+}
+function bestPose(){
+  const poses=poseResult?.landmarks||[];
+  if(!poses.length) return null;
+  return poses[0];
+}
+function faceBox(lm){
+  let xs=[],ys=[];
+  FACE_OVAL.forEach(i=>{if(lm[i]){xs.push(lm[i].x);ys.push(lm[i].y)}});
+  const minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys);
+  return {x:minx,y:miny,w:maxx-minx,h:maxy-miny};
+}
+function P(lm,i,w=sourceCanvas.width,h=sourceCanvas.height){return {x:lm[i].x*w,y:lm[i].y*h}}
+function avgPoints(lm,ids){
+  const pts=ids.filter(i=>lm[i]).map(i=>P(lm,i));
+  return {x:pts.reduce((s,p)=>s+p.x,0)/pts.length,y:pts.reduce((s,p)=>s+p.y,0)/pts.length};
+}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function angle(a,b){return Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI}
+function nextPaint(){return new Promise(r=>requestAnimationFrame(r))}
+function paperColor(){return paperSel.value==="warm"?"#fbf7ee":"#ffffff"}
+
+function newStage(){
+  const c=document.createElement("canvas");
+  c.width=sourceCanvas.width;c.height=sourceCanvas.height;
+  const x=c.getContext("2d",{willReadFrequently:true});
+  x.fillStyle=paperColor();x.fillRect(0,0,c.width,c.height);
+  x.lineCap="round";x.lineJoin="round";
+  return {c,x};
+}
+function strokePath(x,lm,ids,color,width=1.5,close=false,dash=[]){
+  const pts=ids.filter(i=>lm[i]).map(i=>P(lm,i));
+  if(pts.length<2)return;
+  x.save();x.strokeStyle=color;x.lineWidth=width;x.setLineDash(dash);x.beginPath();
+  x.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)x.lineTo(pts[i].x,pts[i].y);
+  if(close)x.closePath();x.stroke();x.restore();
+}
+function drawLine(x,a,b,color,width=1,dash=[]){
+  x.save();x.strokeStyle=color;x.lineWidth=width;x.setLineDash(dash);
+  x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();x.restore();
+}
+function drawCircle(x,p,r,color,width=1,dash=[]){
+  x.save();x.strokeStyle=color;x.lineWidth=width;x.setLineDash(dash);
+  x.beginPath();x.arc(p.x,p.y,r,0,Math.PI*2);x.stroke();x.restore();
+}
+function drawEllipseBox(x,pts,color,width=1.3,dash=[]){
+  const minx=Math.min(...pts.map(p=>p.x)),maxx=Math.max(...pts.map(p=>p.x));
+  const miny=Math.min(...pts.map(p=>p.y)),maxy=Math.max(...pts.map(p=>p.y));
+  x.save();x.strokeStyle=color;x.lineWidth=width;x.setLineDash(dash);
+  x.beginPath();x.ellipse((minx+maxx)/2,(miny+maxy)/2,(maxx-minx)/2,(maxy-miny)/2,0,0,Math.PI*2);
+  x.stroke();x.restore();
+}
+function label(x,text,p){
+  x.save();
+  const size=Math.max(11,sourceCanvas.width/90);
+  x.font=`${size}px Tahoma`;
+  const w=x.measureText(text).width+10,h=size+8;
+  x.fillStyle="rgba(255,253,248,.88)";x.fillRect(p.x,p.y-h,w,h);
+  x.fillStyle="#6a5949";x.fillText(text,p.x+5,p.y-5);
+  x.restore();
+}
+
+function drawFaceConstruction(x,lm,strong=false){
+  const W=sourceCanvas.width,H=sourceCanvas.height;
+  const box=faceBox(lm);
+  const bx=box.x*W,by=box.y*H,bw=box.w*W,bh=box.h*H;
+  const construction="#917a61", guide="#b7a895", dark="#41372f";
+  const eyeL=LEFT_EYE.map(i=>P(lm,i)),eyeR=RIGHT_EYE.map(i=>P(lm,i));
+  const cL=avgPoints(lm,LEFT_EYE),cR=avgPoints(lm,RIGHT_EYE);
+  const mouthL=P(lm,61),mouthR=P(lm,291),mouthTop=P(lm,0),mouthBottom=P(lm,17);
+  const noseL=P(lm,98),noseR=P(lm,327),noseTip=P(lm,1);
+  const chin=P(lm,152),top=P(lm,10);
+
+  // استاد: ابتدا یک envelope بیضی بر اساس خود صورت
+  x.save();x.strokeStyle=construction;x.lineWidth=Math.max(1.1,W/800);x.setLineDash([9,7]);
+  x.beginPath();x.ellipse(bx+bw/2,by+bh/2,bw*.51,bh*.51,0,0,Math.PI*2);x.stroke();x.restore();
+
+  // jaw ghost follows actual photograph
+  strokePath(x,lm,FACE_OVAL,construction,Math.max(1.1,W/900),true,[5,5]);
+
+  // central axis: forehead -> nose bridge -> nose -> philtrum -> chin
+  const axisIds=[10,9,168,6,197,195,5,4,1,2,0,17,152];
+  strokePath(x,lm,axisIds,guide,Math.max(1,W/1000),false,[7,6]);
+
+  // eye line follows actual tilt, extended across face
+  const vx=cR.x-cL.x,vy=cR.y-cL.y,len=Math.hypot(vx,vy)||1,ux=vx/len,uy=vy/len;
+  const eyeA={x:cL.x-ux*bw*.32,y:cL.y-uy*bw*.32};
+  const eyeB={x:cR.x+ux*bw*.32,y:cR.y+uy*bw*.32};
+  drawLine(x,eyeA,eyeB,guide,Math.max(1,W/1000),[7,6]);
+
+  // eye size boxes/ellipses
+  drawEllipseBox(x,eyeL,construction,Math.max(1.2,W/900));
+  drawEllipseBox(x,eyeR,construction,Math.max(1.2,W/900));
+
+  // brow rhythm
+  strokePath(x,lm,LEFT_BROW,construction,Math.max(1,W/900),false);
+  strokePath(x,lm,RIGHT_BROW,construction,Math.max(1,W/900),false);
+
+  // nose axis + width
+  strokePath(x,lm,NOSE_LINE,construction,Math.max(1,W/900));
+  drawLine(x,noseL,noseR,guide,Math.max(1,W/1000),[5,5]);
+
+  // mouth width + height envelope
+  const mouthPts=OUTER_LIPS.map(i=>P(lm,i));
+  drawEllipseBox(x,mouthPts,construction,Math.max(1.2,W/900));
+  drawLine(x,mouthL,mouthR,guide,Math.max(1,W/1000),[5,5]);
+
+  // proportional thirds between top/chin at brow/nose
+  const browY=(avgPoints(lm,LEFT_BROW).y+avgPoints(lm,RIGHT_BROW).y)/2;
+  const noseY=noseTip.y;
+  [browY,noseY].forEach(y=>{
+    drawLine(x,{x:bx-bw*.06,y},{x:bx+bw*1.06,y},guide,Math.max(.9,W/1200),[4,7]);
+  });
+
+  if(strong){
+    strokePath(x,lm,FACE_OVAL,dark,Math.max(1.8,W/650),true);
+    strokePath(x,lm,LEFT_EYE,dark,Math.max(1.4,W/800),true);
+    strokePath(x,lm,RIGHT_EYE,dark,Math.max(1.4,W/800),true);
+    strokePath(x,lm,OUTER_LIPS,dark,Math.max(1.3,W/850),true);
+  } else {
+    label(x,"خط چشم",{x:bx+bw*.03,y:cL.y-8});
+    label(x,"عرض بینی",{x:noseL.x,y:noseL.y-8});
+    label(x,"اندازه دهان",{x:mouthL.x,y:mouthBottom.y+24});
+  }
+}
+
+function drawPoseConstruction(x,pose,strong=false){
+  if(!pose)return;
+  const W=sourceCanvas.width,H=sourceCanvas.height;
+  const p=i=>({x:pose[i].x*W,y:pose[i].y*H});
+  const vis=i=>(pose[i].visibility??1)>.3;
+  const c=strong?"#3d352e":"#9a8167";
+  const lw=strong?Math.max(2,W/600):Math.max(1.3,W/850);
+  POSE_EDGES.forEach(([a,b])=>{if(vis(a)&&vis(b))drawLine(x,p(a),p(b),c,lw,strong?[]:[7,5])});
+  [11,12,13,14,15,16,23,24,25,26,27,28].forEach(i=>{
+    if(vis(i))drawCircle(x,p(i),strong?3.2:5,c,Math.max(1,W/1000),strong?[]:[4,4])
+  });
+  // gesture line from shoulders center to hips center
+  if(vis(11)&&vis(12)&&vis(23)&&vis(24)){
+    const sh={x:(p(11).x+p(12).x)/2,y:(p(11).y+p(12).y)/2};
+    const hp={x:(p(23).x+p(24).x)/2,y:(p(23).y+p(24).y)/2};
+    drawLine(x,sh,hp,"#b5a48e",Math.max(1,W/1000),[8,6]);
+  }
+}
+
+function buildConstruction(face,pose){
+  const {c,x}=newStage();
+  if(face) drawFaceConstruction(x,face,false);
+  if(pose) drawPoseConstruction(x,pose,false);
+  if(!face && !pose) drawGenericStructure(x,1);
+  return c;
+}
+function buildBlockIn(face,pose){
+  const {c,x}=newStage();
+  if(face){
+    drawFaceConstruction(x,face,true);
+    strokePath(x,face,LEFT_BROW,"#3e3730",Math.max(1.4,c.width/800));
+    strokePath(x,face,RIGHT_BROW,"#3e3730",Math.max(1.4,c.width/800));
+    strokePath(x,face,NOSE_LINE,"#4b4138",Math.max(1.2,c.width/900));
+    strokePath(x,face,NOSE_BASE,"#4b4138",Math.max(1.2,c.width/900));
+    strokePath(x,face,INNER_LIPS,"#4b4138",Math.max(1.1,c.width/900),true);
+  }
+  if(pose)drawPoseConstruction(x,pose,true);
+  // broad scene/object contours are secondary
+  overlayEdges(x,sourceCanvas,0.92,2.6,.20);
+  if(!face&&!pose)drawGenericStructure(x,2);
+  return c;
+}
+function buildRefined(face,pose){
+  const {c,x}=newStage();
+  overlayEdges(x,sourceCanvas,0.78,1.4,.70);
+  if(face){
+    strokePath(x,face,FACE_OVAL,"#28231f",Math.max(1.6,c.width/700),true);
+    strokePath(x,face,LEFT_EYE,"#28231f",Math.max(1.3,c.width/820),true);
+    strokePath(x,face,RIGHT_EYE,"#28231f",Math.max(1.3,c.width/820),true);
+    strokePath(x,face,LEFT_BROW,"#332c27",Math.max(1.3,c.width/820));
+    strokePath(x,face,RIGHT_BROW,"#332c27",Math.max(1.3,c.width/820));
+    strokePath(x,face,NOSE_LINE,"#443a32",Math.max(1.1,c.width/900));
+    strokePath(x,face,NOSE_BASE,"#443a32",Math.max(1.1,c.width/900));
+    strokePath(x,face,OUTER_LIPS,"#332c27",Math.max(1.25,c.width/850),true);
+    strokePath(x,face,INNER_LIPS,"#51453b",Math.max(.9,c.width/1000),true);
+  }
+  return c;
+}
+function buildValues(face,pose){
+  const {c,x}=newStage();
+  const im=sourceCtx.getImageData(0,0,sourceCanvas.width,sourceCanvas.height);
+  const levels=5;
+  const out=x.createImageData(c.width,c.height);
+  for(let i=0;i<im.data.length;i+=4){
+    const g=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
+    const q=Math.round(g/(255/(levels-1)))*(255/(levels-1));
+    const warm=paperSel.value==="warm";
+    out.data[i]=warm?Math.min(255,q+7):q;
+    out.data[i+1]=warm?Math.min(255,q+4):q;
+    out.data[i+2]=warm?Math.max(0,q-2):q;
+    out.data[i+3]=255;
+  }
+  x.putImageData(out,0,0);
+  x.globalAlpha=.55;
+  overlayEdges(x,sourceCanvas,0.82,1.1,.52);
+  x.globalAlpha=1;
+  if(face)strokePath(x,face,FACE_OVAL,"#3b332c",Math.max(1.3,c.width/800),true);
+  return c;
+}
+function buildFinal(face,pose){
+  const {c,x}=newStage();
+  const im=sourceCtx.getImageData(0,0,sourceCanvas.width,sourceCanvas.height);
+  const gray=new Float32Array(c.width*c.height);
+  for(let i=0,j=0;i<im.data.length;i+=4,j++)gray[j]=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
+  const blur=boxBlur(gray,c.width,c.height,Math.max(4,Math.round(8-(+detail.value-35)/20)));
+  const out=x.createImageData(c.width,c.height);
+  for(let j=0;j<gray.length;j++){
+    const inv=255-blur[j];
+    let v=inv>=254?255:Math.min(255,(gray[j]*255)/(255-inv+1));
+    v=Math.pow(v/255,.88)*255;
+    const k=j*4;
+    out.data[k]=out.data[k+1]=out.data[k+2]=v;
+    out.data[k+3]=255;
+  }
+  x.putImageData(out,0,0);
+  x.globalAlpha=.65;
+  overlayEdges(x,sourceCanvas,Math.max(.60,.78-(+detail.value-72)/250),.9,.80);
+  x.globalAlpha=1;
+  if(face){
+    strokePath(x,face,LEFT_EYE,"#26211e",Math.max(1.1,c.width/900),true);
+    strokePath(x,face,RIGHT_EYE,"#26211e",Math.max(1.1,c.width/900),true);
+    strokePath(x,face,OUTER_LIPS,"#332c27",Math.max(1,c.width/950),true);
+  }
+  return c;
+}
+
+function drawGenericStructure(x,level){
+  const alpha=level===1?.32:.55;
+  overlayEdges(x,sourceCanvas,level===1?.95:.87,level===1?3.8:2.1,alpha);
+}
+
+function overlayEdges(target,src,percentile=0.8,blurRadius=1.2,alpha=.6){
+  const W=src.width,H=src.height;
+  const im=sourceCtx.getImageData(0,0,W,H);
+  const g=new Float32Array(W*H);
+  for(let i=0,j=0;i<im.data.length;i+=4,j++)g[j]=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
+  const b=boxBlur(g,W,H,Math.max(1,Math.round(blurRadius)));
+  const e=sobel(b,W,H);
+  const vals=[];
+  const stride=Math.max(1,Math.floor(e.length/50000));
+  for(let i=0;i<e.length;i+=stride)vals.push(e[i]);
+  vals.sort((a,b)=>a-b);
+  const th=vals[Math.min(vals.length-1,Math.floor(vals.length*percentile))]||30;
+  const id=target.getImageData(0,0,W,H);
+  for(let i=0;i<e.length;i++){
+    if(e[i]>th){
+      const darkness=Math.max(22,100-(e[i]-th)*1.4);
+      const k=i*4;
+      const v=darkness;
+      id.data[k]=Math.min(id.data[k],v);
+      id.data[k+1]=Math.min(id.data[k+1],v);
+      id.data[k+2]=Math.min(id.data[k+2],v);
+      id.data[k+3]=255;
     }
-
-    function drawImageToCanvas(img, canvas, maxSide = 1200) {
-      const dims = fitDimensions(img.width, img.height, maxSide);
-      canvas.width = dims.width;
-      canvas.height = dims.height;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    }
-
-    function fitDimensions(w, h, maxSide) {
-      if (Math.max(w, h) <= maxSide) return { width: w, height: h };
-      const scale = maxSide / Math.max(w, h);
-      return {
-        width: Math.round(w * scale),
-        height: Math.round(h * scale)
-      };
-    }
-
-    async function generateStages() {
-      if (!loadedImage) {
-        updateStatus('ابتدا یک عکس انتخاب کن.');
-        return;
-      }
-
-      generateBtn.disabled = true;
-      downloadAllBtn.disabled = true;
-      stageCanvases.forEach(s => s.downloadBtn.disabled = true);
-
-      updateStatus('در حال پردازش مرحله 1 از 5 ...');
-
-      const detail = parseInt(detailRange.value, 10);
-      const mode = modeSelect.value;
-
-      const source = document.createElement('canvas');
-      drawImageToCanvas(loadedImage, source, 1200);
-      const sctx = source.getContext('2d');
-      const baseData = sctx.getImageData(0, 0, source.width, source.height);
-
-      try {
-        await renderStage1(baseData, stageCanvases[0].canvas, detail, mode, source);
-        stageCanvases[0].downloadBtn.disabled = false;
-
-        updateStatus('در حال پردازش مرحله 2 از 5 ...');
-        await nextFrame();
-        await renderStage2(baseData, stageCanvases[1].canvas, detail, mode);
-        stageCanvases[1].downloadBtn.disabled = false;
-
-        updateStatus('در حال پردازش مرحله 3 از 5 ...');
-        await nextFrame();
-        await renderStage3(baseData, stageCanvases[2].canvas, detail, mode);
-        stageCanvases[2].downloadBtn.disabled = false;
-
-        updateStatus('در حال پردازش مرحله 4 از 5 ...');
-        await nextFrame();
-        await renderStage4(baseData, stageCanvases[3].canvas, detail, mode);
-        stageCanvases[3].downloadBtn.disabled = false;
-
-        updateStatus('در حال پردازش مرحله 5 از 5 ...');
-        await nextFrame();
-        await renderStage5(baseData, stageCanvases[4].canvas, detail, mode);
-        stageCanvases[4].downloadBtn.disabled = false;
-
-        downloadAllBtn.disabled = false;
-        updateStatus('مراحل نقاشی با موفقیت تولید شد. می‌توانی هر مرحله را جداگانه یا همه را دانلود کنی.');
-      } catch (err) {
-        console.error(err);
-        updateStatus('در پردازش تصویر خطا رخ داد.');
-      } finally {
-        generateBtn.disabled = false;
-      }
-    }
-
-    function nextFrame() {
-      return new Promise(resolve => requestAnimationFrame(resolve));
-    }
-
-    function imageDataToGray(imgData) {
-      const { data, width, height } = imgData;
-      const gray = new Float32Array(width * height);
-      for (let i = 0, j = 0; i < data.length; i += 4, j++) {
-        gray[j] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-      }
-      return gray;
-    }
-
-    function boxBlurGray(gray, w, h, radius = 2) {
-      const tmp = new Float32Array(w * h);
-      const out = new Float32Array(w * h);
-
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          let sum = 0, count = 0;
-          for (let k = -radius; k <= radius; k++) {
-            const xx = x + k;
-            if (xx >= 0 && xx < w) {
-              sum += gray[y * w + xx];
-              count++;
-            }
-          }
-          tmp[y * w + x] = sum / count;
-        }
-      }
-
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          let sum = 0, count = 0;
-          for (let k = -radius; k <= radius; k++) {
-            const yy = y + k;
-            if (yy >= 0 && yy < h) {
-              sum += tmp[yy * w + x];
-              count++;
-            }
-          }
-          out[y * w + x] = sum / count;
-        }
-      }
-      return out;
-    }
-
-    function sobel(gray, w, h) {
-      const out = new Float32Array(w * h);
-      for (let y = 1; y < h - 1; y++) {
-        for (let x = 1; x < w - 1; x++) {
-          const i = y * w + x;
-
-          const gx =
-            -gray[(y - 1) * w + (x - 1)] + gray[(y - 1) * w + (x + 1)] +
-            -2 * gray[y * w + (x - 1)]     + 2 * gray[y * w + (x + 1)] +
-            -gray[(y + 1) * w + (x - 1)] + gray[(y + 1) * w + (x + 1)];
-
-          const gy =
-            -gray[(y - 1) * w + (x - 1)] - 2 * gray[(y - 1) * w + x] - gray[(y - 1) * w + (x + 1)] +
-             gray[(y + 1) * w + (x - 1)] + 2 * gray[(y + 1) * w + x] + gray[(y + 1) * w + (x + 1)];
-
-          out[i] = Math.sqrt(gx * gx + gy * gy);
-        }
-      }
-      return out;
-    }
-
-    function normalizeArray(arr) {
-      let min = Infinity, max = -Infinity;
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i] < min) min = arr[i];
-        if (arr[i] > max) max = arr[i];
-      }
-      const range = max - min || 1;
-      const out = new Float32Array(arr.length);
-      for (let i = 0; i < arr.length; i++) {
-        out[i] = ((arr[i] - min) / range) * 255;
-      }
-      return out;
-    }
-
-    function arrayToImageDataGray(arr, w, h, invert = false) {
-      const imgData = new ImageData(w, h);
-      for (let i = 0; i < arr.length; i++) {
-        const v = Math.max(0, Math.min(255, invert ? 255 - arr[i] : arr[i]));
-        const idx = i * 4;
-        imgData.data[idx] = v;
-        imgData.data[idx + 1] = v;
-        imgData.data[idx + 2] = v;
-        imgData.data[idx + 3] = 255;
-      }
-      return imgData;
-    }
-
-    function thresholdToLines(arr, w, h, threshold, lineStrength = 0) {
-      const imgData = new ImageData(w, h);
-      for (let i = 0; i < arr.length; i++) {
-        const isLine = arr[i] >= threshold;
-        const v = isLine ? lineStrength : 255;
-        const idx = i * 4;
-        imgData.data[idx] = v;
-        imgData.data[idx + 1] = v;
-        imgData.data[idx + 2] = v;
-        imgData.data[idx + 3] = 255;
-      }
-      return imgData;
-    }
-
-    function getPercentile(arr, p) {
-      const copy = Array.from(arr).sort((a, b) => a - b);
-      const idx = Math.floor((p / 100) * (copy.length - 1));
-      return copy[idx];
-    }
-
-    function drawImageDataToCanvas(imgData, canvas) {
-      canvas.width = imgData.width;
-      canvas.height = imgData.height;
-      canvas.getContext('2d').putImageData(imgData, 0, 0);
-    }
-
-    function posterizeGray(gray, levels = 4) {
-      const out = new Float32Array(gray.length);
-      const step = 255 / (levels - 1);
-      for (let i = 0; i < gray.length; i++) {
-        out[i] = Math.round(gray[i] / step) * step;
-      }
-      return out;
-    }
-
-    function multiplyImages(base, overlay, w, h) {
-      const out = new ImageData(w, h);
-      const a = base.data;
-      const b = overlay.data;
-      const d = out.data;
-
-      for (let i = 0; i < a.length; i += 4) {
-        d[i]     = (a[i]     * b[i])     / 255;
-        d[i + 1] = (a[i + 1] * b[i + 1]) / 255;
-        d[i + 2] = (a[i + 2] * b[i + 2]) / 255;
-        d[i + 3] = 255;
-      }
-      return out;
-    }
-
-    function blendKeepDark(base, overlay, w, h) {
-      const out = new ImageData(w, h);
-      const a = base.data;
-      const b = overlay.data;
-      const d = out.data;
-
-      for (let i = 0; i < a.length; i += 4) {
-        const v = Math.min(a[i], b[i]);
-        d[i] = d[i + 1] = d[i + 2] = v;
-        d[i + 3] = 255;
-      }
-      return out;
-    }
-
-    function sketchEffect(gray, w, h, blurRadius = 8) {
-      const inverted = new Float32Array(gray.length);
-      for (let i = 0; i < gray.length; i++) {
-        inverted[i] = 255 - gray[i];
-      }
-
-      const blurredInv = boxBlurGray(inverted, w, h, blurRadius);
-      const out = new Float32Array(gray.length);
-
-      for (let i = 0; i < gray.length; i++) {
-        const base = gray[i];
-        const top = blurredInv[i];
-        const dodge = top >= 255 ? 255 : Math.min(255, (base * 255) / (255 - top + 1e-5));
-        out[i] = dodge;
-      }
-      return out;
-    }
-
-    function createBlankWhiteCanvas(canvas, w, h) {
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, w, h);
-      return ctx;
-    }
-
-    function addHatching(canvas, gray, density = 10, darknessThresholds = [160, 110, 70]) {
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-
-      ctx.save();
-      ctx.strokeStyle = 'rgba(0,0,0,0.18)';
-      ctx.lineWidth = 1;
-
-      for (let y = 0; y < h; y += density) {
-        for (let x = 0; x < w; x += density) {
-          const idx = Math.min(gray.length - 1, Math.floor(y) * w + Math.floor(x));
-          const g = gray[idx];
-
-          if (g < darknessThresholds[0]) {
-            ctx.beginPath();
-            ctx.moveTo(x, y + density);
-            ctx.lineTo(x + density, y);
-            ctx.stroke();
-          }
-          if (g < darknessThresholds[1]) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + density, y + density);
-            ctx.stroke();
-          }
-          if (g < darknessThresholds[2]) {
-            ctx.beginPath();
-            ctx.moveTo(x + density / 2, y);
-            ctx.lineTo(x + density / 2, y + density);
-            ctx.stroke();
-          }
-        }
-      }
-      ctx.restore();
-    }
-
-    async function renderStage1(baseData, canvas, detail, mode, sourceCanvas) {
-      const w = baseData.width;
-      const h = baseData.height;
-      const gray = imageDataToGray(baseData);
-
-      const blurRadius = mode === 'soft' ? 6 : mode === 'sharp' ? 4 : 5;
-      const blurred = boxBlurGray(gray, w, h, blurRadius);
-      const edges = normalizeArray(sobel(blurred, w, h));
-      const threshold = mode === 'soft'
-        ? getPercentile(edges, 93 - detail * 0.10)
-        : mode === 'sharp'
-        ? getPercentile(edges, 88 - detail * 0.12)
-        : getPercentile(edges, 90 - detail * 0.11);
-
-      const lines = thresholdToLines(edges, w, h, threshold, 0);
-      drawImageDataToCanvas(lines, canvas);
-
-      await tryDrawFaceGuide(canvas, sourceCanvas);
-    }
-
-    async function renderStage2(baseData, canvas, detail, mode) {
-      const w = baseData.width;
-      const h = baseData.height;
-      const gray = imageDataToGray(baseData);
-
-      const blurRadius = mode === 'soft' ? 4 : mode === 'sharp' ? 2 : 3;
-      const blurred = boxBlurGray(gray, w, h, blurRadius);
-
-      const edges = normalizeArray(sobel(blurred, w, h));
-      const threshold = mode === 'soft'
-        ? getPercentile(edges, 86 - detail * 0.08)
-        : mode === 'sharp'
-        ? getPercentile(edges, 80 - detail * 0.08)
-        : getPercentile(edges, 83 - detail * 0.08);
-
-      const lines = thresholdToLines(edges, w, h, threshold, 0);
-      const tones = posterizeGray(blurred, 4);
-      const toneImg = arrayToImageDataGray(tones, w, h, false);
-
-      const combined = blendKeepDark(toneImg, lines, w, h);
-      drawImageDataToCanvas(combined, canvas);
-    }
-
-    async function renderStage3(baseData, canvas, detail, mode) {
-      const w = baseData.width;
-      const h = baseData.height;
-      const gray = imageDataToGray(baseData);
-
-      const blurRadius = mode === 'soft' ? 2 : 1;
-      const blurred = boxBlurGray(gray, w, h, blurRadius);
-
-      const edges = normalizeArray(sobel(blurred, w, h));
-      const threshold = mode === 'soft'
-        ? getPercentile(edges, 74 - detail * 0.06)
-        : mode === 'sharp'
-        ? getPercentile(edges, 66 - detail * 0.06)
-        : getPercentile(edges, 70 - detail * 0.06);
-
-      const lines = thresholdToLines(edges, w, h, threshold, 0);
-      drawImageDataToCanvas(lines, canvas);
-
-      const ctx = canvas.getContext('2d');
-      ctx.save();
-      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-      ctx.lineWidth = 0.8;
-      for (let i = 0; i < h; i += Math.max(24, Math.round(42 - detail * 0.2))) {
-        ctx.beginPath();
-        ctx.moveTo(0, i);
-        ctx.lineTo(w, i);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    async function renderStage4(baseData, canvas, detail, mode) {
-      const w = baseData.width;
-      const h = baseData.height;
-      const gray = imageDataToGray(baseData);
-
-      const blurred = boxBlurGray(gray, w, h, 1);
-      const edges = normalizeArray(sobel(blurred, w, h));
-      const threshold = mode === 'soft'
-        ? getPercentile(edges, 68 - detail * 0.05)
-        : mode === 'sharp'
-        ? getPercentile(edges, 60 - detail * 0.05)
-        : getPercentile(edges, 64 - detail * 0.05);
-
-      const lines = thresholdToLines(edges, w, h, threshold, 0);
-      drawImageDataToCanvas(lines, canvas);
-
-      const density = mode === 'soft'
-        ? Math.max(10, Math.round(18 - detail * 0.08))
-        : mode === 'sharp'
-        ? Math.max(7, Math.round(14 - detail * 0.07))
-        : Math.max(8, Math.round(16 - detail * 0.075));
-
-      addHatching(canvas, gray, density);
-    }
-
-    async function renderStage5(baseData, canvas, detail, mode) {
-      const w = baseData.width;
-      const h = baseData.height;
-      const gray = imageDataToGray(baseData);
-
-      const blurRadius = mode === 'soft' ? 8 : mode === 'sharp' ? 5 : 6;
-      const sketch = sketchEffect(gray, w, h, blurRadius);
-      const sketchImg = arrayToImageDataGray(sketch, w, h, true);
-
-      const edges = normalizeArray(sobel(boxBlurGray(gray, w, h, 1), w, h));
-      const threshold = mode === 'soft'
-        ? getPercentile(edges, 60 - detail * 0.04)
-        : mode === 'sharp'
-        ? getPercentile(edges, 54 - detail * 0.04)
-        : getPercentile(edges, 57 - detail * 0.04);
-
-      const lines = thresholdToLines(edges, w, h, threshold, 30);
-      const combined = blendKeepDark(sketchImg, lines, w, h);
-
-      drawImageDataToCanvas(combined, canvas);
-
-      const ctx = canvas.getContext('2d');
-      ctx.save();
-      ctx.globalAlpha = 0.06;
-      ctx.fillStyle = '#000';
-      for (let y = 0; y < h; y += 4) {
-        for (let x = 0; x < w; x += 4) {
-          if ((x + y) % 12 === 0) {
-            ctx.fillRect(x, y, 1, 1);
-          }
-        }
-      }
-      ctx.restore();
-    }
-
-    async function tryDrawFaceGuide(canvas, sourceCanvas) {
-      if (!('FaceDetector' in window)) return;
-
-      try {
-        const detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 3 });
-        const bitmap = await createImageBitmap(sourceCanvas);
-        const faces = await detector.detect(bitmap);
-        if (!faces || !faces.length) return;
-
-        const ctx = canvas.getContext('2d');
-        ctx.save();
-        ctx.strokeStyle = 'rgba(120,120,120,0.85)';
-        ctx.lineWidth = Math.max(1, canvas.width / 900);
-        ctx.setLineDash([8, 8]);
-
-        faces.forEach(face => {
-          const box = face.boundingBox;
-          const x = box.x;
-          const y = box.y;
-          const w = box.width;
-          const h = box.height;
-
-          drawOval(ctx, x, y, w, h);
-
-          ctx.beginPath();
-          ctx.moveTo(x + w / 2, y);
-          ctx.lineTo(x + w / 2, y + h);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(x + w * 0.18, y + h * 0.42);
-          ctx.lineTo(x + w * 0.82, y + h * 0.42);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(x + w * 0.28, y + h * 0.68);
-          ctx.lineTo(x + w * 0.72, y + h * 0.68);
-          ctx.stroke();
-        });
-
-        ctx.restore();
-      } catch (e) {
-        console.warn('FaceDetector not usable here:', e);
-      }
-    }
-
-    function drawOval(ctx, x, y, w, h) {
-      ctx.beginPath();
-      ctx.ellipse(x + w / 2, y + h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    function downloadCanvas(canvas, filename) {
-      if (!canvas.width || !canvas.height) return;
-      const link = document.createElement('a');
-      link.download = filename;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
-
-    async function downloadAllStages() {
-      for (let i = 0; i < stageCanvases.length; i++) {
-        const s = stageCanvases[i];
-        if (s.canvas.width > 1 && s.canvas.height > 1) {
-          downloadCanvas(s.canvas, `drawing_stage_${i + 1}.png`);
-          await new Promise(r => setTimeout(r, 250));
-        }
-      }
-    }
-  </script>
+  }
+  target.save();target.globalAlpha=alpha;target.putImageData(id,0,0);target.restore();
+}
+
+function boxBlur(a,W,H,r){
+  const t=new Float32Array(a.length),o=new Float32Array(a.length);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    let s=0,n=0;for(let k=-r;k<=r;k++){let xx=x+k;if(xx>=0&&xx<W){s+=a[y*W+xx];n++}}
+    t[y*W+x]=s/n;
+  }
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    let s=0,n=0;for(let k=-r;k<=r;k++){let yy=y+k;if(yy>=0&&yy<H){s+=t[yy*W+x];n++}}
+    o[y*W+x]=s/n;
+  }
+  return o;
+}
+function sobel(g,W,H){
+  const o=new Float32Array(g.length);
+  for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
+    const a=(yy,xx)=>g[yy*W+xx];
+    const gx=-a(y-1,x-1)+a(y-1,x+1)-2*a(y,x-1)+2*a(y,x+1)-a(y+1,x-1)+a(y+1,x+1);
+    const gy=-a(y-1,x-1)-2*a(y-1,x)-a(y-1,x+1)+a(y+1,x-1)+2*a(y+1,x)+a(y+1,x+1);
+    o[y*W+x]=Math.hypot(gx,gy);
+  }
+  return o;
+}
+
+function updateAnalysis(face,pose){
+  const spans=[...metricsEl.querySelectorAll("span")];
+  const type=face?"پرتره / انسان":pose?"فیگور انسانی":"سوژه عمومی";
+  spans[0].textContent=type;
+  spans[1].textContent=face?"تشخیص دقیق":"پیدا نشد";
+  spans[2].textContent=pose?"تشخیص شد":"پیدا نشد";
+
+  if(face){
+    const box=faceBox(face);
+    const cL=avgPoints(face,LEFT_EYE),cR=avgPoints(face,RIGHT_EYE);
+    const eyeAngle=angle(cL,cR);
+    const mW=dist(P(face,61),P(face,291))/(box.w*sourceCanvas.width)*100;
+    const ratio=box.h/box.w;
+    spans[3].textContent=`${eyeAngle.toFixed(1)}°`;
+    spans[4].textContent=`${mW.toFixed(0)}%`;
+    spans[5].textContent=`${ratio.toFixed(2)} : 1`;
+
+    const tilt=Math.abs(eyeAngle)<2?"تقریباً افقی":eyeAngle>0?"به سمت راست تصویر پایین می‌رود":"به سمت چپ تصویر پایین می‌رود";
+    teacherEl.innerHTML=
+      `از <b>خط چشم</b> شروع کن؛ در این عکس ${tilt} و زاویه‌اش حدود <b>${eyeAngle.toFixed(1)}°</b> است. `+
+      `بیضی مرحله اول از کادر واقعی جمجمه/فک همین فرد ساخته شده است. `+
+      `عرض دهان تقریباً <b>${mW.toFixed(0)}٪ عرض صورت</b> است؛ بنابراین دهان را از روی اندازه‌ی واقعی علامت‌گذاری کن، نه با نسبت ثابت کتابی. `+
+      `در مرحله ۱ خطوط را بسیار کمرنگ بکش و فقط وقتی جای چشم، بینی و دهان درست شد وارد مرحله ۲ شو.`;
+  }else if(pose){
+    spans[3].textContent="—";spans[4].textContent="—";spans[5].textContent="—";
+    teacherEl.innerHTML="این عکس بیشتر به عنوان <b>فیگور</b> تحلیل شده است. ابتدا خط ژست، شانه‌ها، لگن و مفاصل را بکش؛ بعد حجم اندام‌ها را روی آن سوار کن.";
+  }else{
+    spans[3].textContent="—";spans[4].textContent="—";spans[5].textContent="—";
+    teacherEl.innerHTML="چهره یا بدن مطمئنی پیدا نشد؛ برنامه برای این عکس از ساختار چندمقیاسی لبه‌ها استفاده می‌کند. برای اشیاء و منظره، مرحله ۱ فقط شکل‌های غالب را نگه می‌دارد.";
+  }
+}
+
+function buildTabs(){
+  tabsEl.innerHTML="";
+  STAGE_META.forEach((m,i)=>{
+    const b=document.createElement("button");
+    b.className="tab";b.textContent=`مرحله ${i+1}`;
+    b.onclick=()=>showStage(i);
+    tabsEl.appendChild(b);
+  });
+}
+function showStage(i){
+  if(!stages.length)return;
+  currentStage=i;
+  const s=stages[i];
+  canvas.width=s.width;canvas.height=s.height;
+  ctx.drawImage(s,0,0);
+  titleEl.textContent=STAGE_META[i][0];
+  descEl.textContent=STAGE_META[i][1];
+  badgeEl.textContent=`${i+1} / 5`;
+  [...tabsEl.children].forEach((b,j)=>b.classList.toggle("active",j===i));
+  prevBtn.disabled=i===0;nextBtn.disabled=i===4;
+}
+function downloadCurrent(){
+  if(!stages.length)return;
+  const a=document.createElement("a");
+  a.download=`drawing-master-stage-${currentStage+1}.png`;
+  a.href=stages[currentStage].toDataURL("image/png");
+  a.click();
+}
+</script>
 </body>
 </html>
