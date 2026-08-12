@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>استاد طراحی - تبدیل عکس به مراحل نقاشی</title>
+  <style>
+    :root{
+      --bg:#f4f1eb;
+      --card:#ffffff;
+      --ink:#222;
+      --muted:#6c6c6c;
+      --accent:#6a4e3b;
+      --accent2:#8c6a52;
+      --border:#dfd7cd;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma, sans-serif;
+      background:linear-gradient(180deg,#f7f4ef 0%, #efe8df 100%);
+      color:var(--ink);
+    }
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:20px;
+    }
+    .hero{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:18px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:28px;
+      color:var(--accent);
+    }
+    .sub{
+      color:var(--muted);
+      line-height:1.9;
+      font-size:15px;
+    }
+    .controls{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    label{
+      display:block;
+      font-weight:bold;
+      margin-bottom:8px;
+      color:#4f3c2f;
+    }
+    input[type="file"], select, input[type="range"]{
+      width:100%;
+    }
+    .btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      background:var(--accent);
+      color:#fff;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:bold;
+      transition:.2s;
+    }
+    button:hover{background:var(--accent2)}
+    button.secondary{
+      background:#8a8a8a;
+    }
+    button:disabled{
+      background:#bfb8b1;
+      cursor:not-allowed;
+    }
+    .status{
+      margin-top:12px;
+      padding:12px 14px;
+      background:#fff8ef;
+      border:1px solid #ead8bf;
+      border-radius:12px;
+      color:#674d33;
+      min-height:48px;
+      line-height:1.8;
+      font-size:14px;
+    }
+    .preview-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+    .original-wrap{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    .original-panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .stages{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:18px;
+    }
+    .stage-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .stage-title{
+      font-weight:bold;
+      color:var(--accent);
+      font-size:17px;
+    }
+    .stage-desc{
+      color:var(--muted);
+      line-height:1.8;
+      font-size:14px;
+      min-height:56px;
+    }
+    .canvas-wrap{
+      background:#fafafa;
+      border:1px solid #ddd;
+      border-radius:14px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:220px;
+    }
+    canvas{
+      display:block;
+      width:100%;
+      height:auto;
+      background:white;
+    }
+    .footer-note{
+      margin-top:16px;
+      color:var(--muted);
+      line-height:1.9;
+      font-size:14px;
+    }
+    .inline{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .small{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .pill{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#f2ebe2;
+      border:1px solid var(--border);
+      font-size:12px;
+      color:#6b5544;
+    }
+    @media (max-width:700px){
+      h1{font-size:23px}
+      .container{padding:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>استاد طراحی - تبدیل عکس به مراحل نقاشی مدادی</h1>
+      <div class="sub">
+        این نسخه‌ی اول به‌صورت کامل در مرورگر کار می‌کند. شما عکس را با دوربین گوشی یا از گالری وارد می‌کنید،
+        و برنامه آن را به 5 مرحله‌ی طراحی مدادی تبدیل می‌کند؛ از فرم‌های درشت تا طرح نهایی.
+      </div>
+
+      <div class="controls">
+        <div class="card">
+          <label for="imageInput">انتخاب عکس یا گرفتن عکس با گوشی</label>
+          <input id="imageInput" type="file" accept="image/*" capture="environment">
+          <div class="small" style="margin-top:8px;">
+            در موبایل می‌توانی مستقیم دوربین را باز کنی.
+          </div>
+        </div>
+
+        <div class="card">
+          <label for="detailRange">میزان جزئیات</label>
+          <input id="detailRange" type="range" min="1" max="100" value="60">
+          <div class="inline" style="margin-top:8px;">
+            <span class="pill">کم</span>
+            <span id="detailValue" class="pill">60</span>
+            <span class="pill">زیاد</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <label for="modeSelect">نوع خروجی</label>
+          <select id="modeSelect">
+            <option value="balanced">متعادل</option>
+            <option value="soft">نرم و آموزشی</option>
+            <option value="sharp">دقیق و پرجزئیات</option>
+          </select>
+          <div class="small" style="margin-top:8px;">
+            برای انسان معمولاً حالت «متعادل» یا «نرم» بهتر است.
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="generateBtn" disabled>تولید مراحل نقاشی</button>
+        <button id="downloadAllBtn" class="secondary" disabled>دانلود همه مراحل</button>
+        <button id="clearBtn" class="secondary">پاک کردن</button>
+      </div>
+
+      <div id="status" class="status">هنوز عکسی انتخاب نشده است.</div>
+    </section>
+
+    <section class="preview-grid">
+      <div class="original-panel">
+        <div class="stage-title">عکس اصلی</div>
+        <div class="stage-desc">این تصویر مرجع شما برای تمرین طراحی است.</div>
+        <div class="canvas-wrap">
+          <canvas id="originalCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="stages" id="stagesContainer"></div>
+
+      <div class="footer-note">
+        <strong>نکته:</strong>
+        این نسخه‌ی اول کاملاً محلی (Local) است و از هوش مصنوعی ابری استفاده نمی‌کند؛
+        بنابراین خروجی‌ها بر پایه‌ی پردازش تصویر، خطوط، کنتراست، تُن و فرم‌ها تولید می‌شوند.
+        در نسخه‌ی بعدی می‌توانیم تشخیص بهتر چهره، راهنمای نسبت‌ها، تقسیم‌بندی فرم صورت، و توضیح آموزشی دقیق‌تر اضافه کنیم.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const downloadAllBtn = document.getElementById('downloadAllBtn');
+    const statusEl = document.getElementById('status');
+    const originalCanvas = document.getElementById('originalCanvas');
+    const stagesContainer = document.getElementById('stagesContainer');
+    const detailRange = document.getElementById('detailRange');
+    const detailValue = document.getElementById('detailValue');
+    const modeSelect = document.getElementById('modeSelect');
+
+    let loadedImage = null;
+    let stageCanvases = [];
+
+    const stageDefinitions = [
+      {
+        title: 'مرحله 1 - اسکلت اولیه و فرم‌های درشت',
+        desc: 'ابتدا فقط فرم‌های خیلی مهم، مرزهای اصلی و ساختار کلی را بکش. هنوز وارد جزئیات نشو و خطوط را کمرنگ بگیر.'
+      },
+      {
+        title: 'مرحله 2 - فرم‌های اصلی و نسبت‌ها',
+        desc: 'در این مرحله حجم‌های اصلی را کامل‌تر کن. مرزهای بزرگ، تناسبات و محل کلی اجزا را دقیق‌تر مشخص کن.'
+      },
+      {
+        title: 'مرحله 3 - کانتورهای مهم',
+        desc: 'حالا مرزهای مهم‌تر و خط‌های شاخص را اضافه کن. این مرحله ستون اصلی طراحی تو است.'
+      },
+      {
+        title: 'مرحله 4 - جزئیات و راهنمای سایه',
+        desc: 'جزئیات اصلی و نواحی تیرگی/روشنی را وارد کن. هنوز سایه‌ها را سبک و قابل کنترل نگه دار.'
+      },
+      {
+        title: 'مرحله 5 - طراحی مدادی نهایی',
+        desc: 'در پایان، با حفظ فرم‌ها، جزئیات را کامل کن و طراحی را به حالت نهایی مدادی نزدیک کن.'
+      }
+    ];
+
+    detailRange.addEventListener('input', () => {
+      detailValue.textContent = detailRange.value;
+    });
+
+    imageInput.addEventListener('change', handleImageUpload);
+    generateBtn.addEventListener('click', generateStages);
+    clearBtn.addEventListener('click', clearAll);
+    downloadAllBtn.addEventListener('click', downloadAllStages);
+
+    createStageCards();
+
+    function createStageCards() {
+      stagesContainer.innerHTML = '';
+      stageCanvases = [];
+
+      stageDefinitions.forEach((stage, index) => {
+        const card = document.createElement('div');
+        card.className = 'stage-card';
+
+        const title = document.createElement('div');
+        title.className = 'stage-title';
+        title.textContent = stage.title;
+
+        const desc = document.createElement('div');
+        desc.className = 'stage-desc';
+        desc.textContent = stage.desc;
+
+        const canvasWrap = document.createElement('div');
+        canvasWrap.className = 'canvas-wrap';
+
+        const canvas = document.createElement('canvas');
+        canvas.id = `stageCanvas${index + 1}`;
+
+        canvasWrap.appendChild(canvas);
+
+        const btnRow = document.createElement('div');
+        btnRow.className = 'btn-row';
+
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'secondary';
+        downloadBtn.textContent = 'دانلود این مرحله';
+        downloadBtn.disabled = true;
+        downloadBtn.addEventListener('click', () => {
+          downloadCanvas(canvas, `drawing_stage_${index + 1}.png`);
+        });
+
+        btnRow.appendChild(downloadBtn);
+        card.appendChild(title);
+        card.appendChild(desc);
+        card.appendChild(canvasWrap);
+        card.appendChild(btnRow);
+
+        stagesContainer.appendChild(card);
+
+        stageCanvases.push({
+          canvas,
+          downloadBtn,
+          title: stage.title,
+          desc: stage.desc
+        });
+      });
+    }
+
+    function updateStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          loadedImage = img;
+          drawImageToCanvas(img, originalCanvas, 1200);
+          generateBtn.disabled = false;
+          updateStatus('عکس با موفقیت بارگذاری شد. حالا روی «تولید مراحل نقاشی» بزن.');
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearAll() {
+      loadedImage = null;
+      generateBtn.disabled = true;
+      downloadAllBtn.disabled = true;
+      imageInput.value = '';
+      clearCanvas(originalCanvas);
+
+      stageCanvases.forEach(s => {
+        clearCanvas(s.canvas);
+        s.downloadBtn.disabled = true;
+      });
+
+      updateStatus('همه‌چیز پاک شد. یک عکس جدید انتخاب کن.');
+    }
+
+    function clearCanvas(canvas) {
+      const ctx = canvas.getContext('2d');
+      canvas.width = 1;
+      canvas.height = 1;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawImageToCanvas(img, canvas, maxSide = 1200) {
+      const dims = fitDimensions(img.width, img.height, maxSide);
+      canvas.width = dims.width;
+      canvas.height = dims.height;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
+
+    function fitDimensions(w, h, maxSide) {
+      if (Math.max(w, h) <= maxSide) return { width: w, height: h };
+      const scale = maxSide / Math.max(w, h);
+      return {
+        width: Math.round(w * scale),
+        height: Math.round(h * scale)
+      };
+    }
+
+    async function generateStages() {
+      if (!loadedImage) {
+        updateStatus('ابتدا یک عکس انتخاب کن.');
+        return;
+      }
+
+      generateBtn.disabled = true;
+      downloadAllBtn.disabled = true;
+      stageCanvases.forEach(s => s.downloadBtn.disabled = true);
+
+      updateStatus('در حال پردازش مرحله 1 از 5 ...');
+
+      const detail = parseInt(detailRange.value, 10);
+      const mode = modeSelect.value;
+
+      const source = document.createElement('canvas');
+      drawImageToCanvas(loadedImage, source, 1200);
+      const sctx = source.getContext('2d');
+      const baseData = sctx.getImageData(0, 0, source.width, source.height);
+
+      try {
+        await renderStage1(baseData, stageCanvases[0].canvas, detail, mode, source);
+        stageCanvases[0].downloadBtn.disabled = false;
+
+        updateStatus('در حال پردازش مرحله 2 از 5 ...');
+        await nextFrame();
+        await renderStage2(baseData, stageCanvases[1].canvas, detail, mode);
+        stageCanvases[1].downloadBtn.disabled = false;
+
+        updateStatus('در حال پردازش مرحله 3 از 5 ...');
+        await nextFrame();
+        await renderStage3(baseData, stageCanvases[2].canvas, detail, mode);
+        stageCanvases[2].downloadBtn.disabled = false;
+
+        updateStatus('در حال پردازش مرحله 4 از 5 ...');
+        await nextFrame();
+        await renderStage4(baseData, stageCanvases[3].canvas, detail, mode);
+        stageCanvases[3].downloadBtn.disabled = false;
+
+        updateStatus('در حال پردازش مرحله 5 از 5 ...');
+        await nextFrame();
+        await renderStage5(baseData, stageCanvases[4].canvas, detail, mode);
+        stageCanvases[4].downloadBtn.disabled = false;
+
+        downloadAllBtn.disabled = false;
+        updateStatus('مراحل نقاشی با موفقیت تولید شد. می‌توانی هر مرحله را جداگانه یا همه را دانلود کنی.');
+      } catch (err) {
+        console.error(err);
+        updateStatus('در پردازش تصویر خطا رخ داد.');
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
+    function nextFrame() {
+      return new Promise(resolve => requestAnimationFrame(resolve));
+    }
+
+    function imageDataToGray(imgData) {
+      const { data, width, height } = imgData;
+      const gray = new Float32Array(width * height);
+      for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+        gray[j] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      }
+      return gray;
+    }
+
+    function boxBlurGray(gray, w, h, radius = 2) {
+      const tmp = new Float32Array(w * h);
+      const out = new Float32Array(w * h);
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let sum = 0, count = 0;
+          for (let k = -radius; k <= radius; k++) {
+            const xx = x + k;
+            if (xx >= 0 && xx < w) {
+              sum += gray[y * w + xx];
+              count++;
+            }
+          }
+          tmp[y * w + x] = sum / count;
+        }
+      }
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let sum = 0, count = 0;
+          for (let k = -radius; k <= radius; k++) {
+            const yy = y + k;
+            if (yy >= 0 && yy < h) {
+              sum += tmp[yy * w + x];
+              count++;
+            }
+          }
+          out[y * w + x] = sum / count;
+        }
+      }
+      return out;
+    }
+
+    function sobel(gray, w, h) {
+      const out = new Float32Array(w * h);
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const i = y * w + x;
+
+          const gx =
+            -gray[(y - 1) * w + (x - 1)] + gray[(y - 1) * w + (x + 1)] +
+            -2 * gray[y * w + (x - 1)]     + 2 * gray[y * w + (x + 1)] +
+            -gray[(y + 1) * w + (x - 1)] + gray[(y + 1) * w + (x + 1)];
+
+          const gy =
+            -gray[(y - 1) * w + (x - 1)] - 2 * gray[(y - 1) * w + x] - gray[(y - 1) * w + (x + 1)] +
+             gray[(y + 1) * w + (x - 1)] + 2 * gray[(y + 1) * w + x] + gray[(y + 1) * w + (x + 1)];
+
+          out[i] = Math.sqrt(gx * gx + gy * gy);
+        }
+      }
+      return out;
+    }
+
+    function normalizeArray(arr) {
+      let min = Infinity, max = -Infinity;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] < min) min = arr[i];
+        if (arr[i] > max) max = arr[i];
+      }
+      const range = max - min || 1;
+      const out = new Float32Array(arr.length);
+      for (let i = 0; i < arr.length; i++) {
+        out[i] = ((arr[i] - min) / range) * 255;
+      }
+      return out;
+    }
+
+    function arrayToImageDataGray(arr, w, h, invert = false) {
+      const imgData = new ImageData(w, h);
+      for (let i = 0; i < arr.length; i++) {
+        const v = Math.max(0, Math.min(255, invert ? 255 - arr[i] : arr[i]));
+        const idx = i * 4;
+        imgData.data[idx] = v;
+        imgData.data[idx + 1] = v;
+        imgData.data[idx + 2] = v;
+        imgData.data[idx + 3] = 255;
+      }
+      return imgData;
+    }
+
+    function thresholdToLines(arr, w, h, threshold, lineStrength = 0) {
+      const imgData = new ImageData(w, h);
+      for (let i = 0; i < arr.length; i++) {
+        const isLine = arr[i] >= threshold;
+        const v = isLine ? lineStrength : 255;
+        const idx = i * 4;
+        imgData.data[idx] = v;
+        imgData.data[idx + 1] = v;
+        imgData.data[idx + 2] = v;
+        imgData.data[idx + 3] = 255;
+      }
+      return imgData;
+    }
+
+    function getPercentile(arr, p) {
+      const copy = Array.from(arr).sort((a, b) => a - b);
+      const idx = Math.floor((p / 100) * (copy.length - 1));
+      return copy[idx];
+    }
+
+    function drawImageDataToCanvas(imgData, canvas) {
+      canvas.width = imgData.width;
+      canvas.height = imgData.height;
+      canvas.getContext('2d').putImageData(imgData, 0, 0);
+    }
+
+    function posterizeGray(gray, levels = 4) {
+      const out = new Float32Array(gray.length);
+      const step = 255 / (levels - 1);
+      for (let i = 0; i < gray.length; i++) {
+        out[i] = Math.round(gray[i] / step) * step;
+      }
+      return out;
+    }
+
+    function multiplyImages(base, overlay, w, h) {
+      const out = new ImageData(w, h);
+      const a = base.data;
+      const b = overlay.data;
+      const d = out.data;
+
+      for (let i = 0; i < a.length; i += 4) {
+        d[i]     = (a[i]     * b[i])     / 255;
+        d[i + 1] = (a[i + 1] * b[i + 1]) / 255;
+        d[i + 2] = (a[i + 2] * b[i + 2]) / 255;
+        d[i + 3] = 255;
+      }
+      return out;
+    }
+
+    function blendKeepDark(base, overlay, w, h) {
+      const out = new ImageData(w, h);
+      const a = base.data;
+      const b = overlay.data;
+      const d = out.data;
+
+      for (let i = 0; i < a.length; i += 4) {
+        const v = Math.min(a[i], b[i]);
+        d[i] = d[i + 1] = d[i + 2] = v;
+        d[i + 3] = 255;
+      }
+      return out;
+    }
+
+    function sketchEffect(gray, w, h, blurRadius = 8) {
+      const inverted = new Float32Array(gray.length);
+      for (let i = 0; i < gray.length; i++) {
+        inverted[i] = 255 - gray[i];
+      }
+
+      const blurredInv = boxBlurGray(inverted, w, h, blurRadius);
+      const out = new Float32Array(gray.length);
+
+      for (let i = 0; i < gray.length; i++) {
+        const base = gray[i];
+        const top = blurredInv[i];
+        const dodge = top >= 255 ? 255 : Math.min(255, (base * 255) / (255 - top + 1e-5));
+        out[i] = dodge;
+      }
+      return out;
+    }
+
+    function createBlankWhiteCanvas(canvas, w, h) {
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, w, h);
+      return ctx;
+    }
+
+    function addHatching(canvas, gray, density = 10, darknessThresholds = [160, 110, 70]) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+      ctx.lineWidth = 1;
+
+      for (let y = 0; y < h; y += density) {
+        for (let x = 0; x < w; x += density) {
+          const idx = Math.min(gray.length - 1, Math.floor(y) * w + Math.floor(x));
+          const g = gray[idx];
+
+          if (g < darknessThresholds[0]) {
+            ctx.beginPath();
+            ctx.moveTo(x, y + density);
+            ctx.lineTo(x + density, y);
+            ctx.stroke();
+          }
+          if (g < darknessThresholds[1]) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + density, y + density);
+            ctx.stroke();
+          }
+          if (g < darknessThresholds[2]) {
+            ctx.beginPath();
+            ctx.moveTo(x + density / 2, y);
+            ctx.lineTo(x + density / 2, y + density);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    async function renderStage1(baseData, canvas, detail, mode, sourceCanvas) {
+      const w = baseData.width;
+      const h = baseData.height;
+      const gray = imageDataToGray(baseData);
+
+      const blurRadius = mode === 'soft' ? 6 : mode === 'sharp' ? 4 : 5;
+      const blurred = boxBlurGray(gray, w, h, blurRadius);
+      const edges = normalizeArray(sobel(blurred, w, h));
+      const threshold = mode === 'soft'
+        ? getPercentile(edges, 93 - detail * 0.10)
+        : mode === 'sharp'
+        ? getPercentile(edges, 88 - detail * 0.12)
+        : getPercentile(edges, 90 - detail * 0.11);
+
+      const lines = thresholdToLines(edges, w, h, threshold, 0);
+      drawImageDataToCanvas(lines, canvas);
+
+      await tryDrawFaceGuide(canvas, sourceCanvas);
+    }
+
+    async function renderStage2(baseData, canvas, detail, mode) {
+      const w = baseData.width;
+      const h = baseData.height;
+      const gray = imageDataToGray(baseData);
+
+      const blurRadius = mode === 'soft' ? 4 : mode === 'sharp' ? 2 : 3;
+      const blurred = boxBlurGray(gray, w, h, blurRadius);
+
+      const edges = normalizeArray(sobel(blurred, w, h));
+      const threshold = mode === 'soft'
+        ? getPercentile(edges, 86 - detail * 0.08)
+        : mode === 'sharp'
+        ? getPercentile(edges, 80 - detail * 0.08)
+        : getPercentile(edges, 83 - detail * 0.08);
+
+      const lines = thresholdToLines(edges, w, h, threshold, 0);
+      const tones = posterizeGray(blurred, 4);
+      const toneImg = arrayToImageDataGray(tones, w, h, false);
+
+      const combined = blendKeepDark(toneImg, lines, w, h);
+      drawImageDataToCanvas(combined, canvas);
+    }
+
+    async function renderStage3(baseData, canvas, detail, mode) {
+      const w = baseData.width;
+      const h = baseData.height;
+      const gray = imageDataToGray(baseData);
+
+      const blurRadius = mode === 'soft' ? 2 : 1;
+      const blurred = boxBlurGray(gray, w, h, blurRadius);
+
+      const edges = normalizeArray(sobel(blurred, w, h));
+      const threshold = mode === 'soft'
+        ? getPercentile(edges, 74 - detail * 0.06)
+        : mode === 'sharp'
+        ? getPercentile(edges, 66 - detail * 0.06)
+        : getPercentile(edges, 70 - detail * 0.06);
+
+      const lines = thresholdToLines(edges, w, h, threshold, 0);
+      drawImageDataToCanvas(lines, canvas);
+
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i < h; i += Math.max(24, Math.round(42 - detail * 0.2))) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(w, i);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    async function renderStage4(baseData, canvas, detail, mode) {
+      const w = baseData.width;
+      const h = baseData.height;
+      const gray = imageDataToGray(baseData);
+
+      const blurred = boxBlurGray(gray, w, h, 1);
+      const edges = normalizeArray(sobel(blurred, w, h));
+      const threshold = mode === 'soft'
+        ? getPercentile(edges, 68 - detail * 0.05)
+        : mode === 'sharp'
+        ? getPercentile(edges, 60 - detail * 0.05)
+        : getPercentile(edges, 64 - detail * 0.05);
+
+      const lines = thresholdToLines(edges, w, h, threshold, 0);
+      drawImageDataToCanvas(lines, canvas);
+
+      const density = mode === 'soft'
+        ? Math.max(10, Math.round(18 - detail * 0.08))
+        : mode === 'sharp'
+        ? Math.max(7, Math.round(14 - detail * 0.07))
+        : Math.max(8, Math.round(16 - detail * 0.075));
+
+      addHatching(canvas, gray, density);
+    }
+
+    async function renderStage5(baseData, canvas, detail, mode) {
+      const w = baseData.width;
+      const h = baseData.height;
+      const gray = imageDataToGray(baseData);
+
+      const blurRadius = mode === 'soft' ? 8 : mode === 'sharp' ? 5 : 6;
+      const sketch = sketchEffect(gray, w, h, blurRadius);
+      const sketchImg = arrayToImageDataGray(sketch, w, h, true);
+
+      const edges = normalizeArray(sobel(boxBlurGray(gray, w, h, 1), w, h));
+      const threshold = mode === 'soft'
+        ? getPercentile(edges, 60 - detail * 0.04)
+        : mode === 'sharp'
+        ? getPercentile(edges, 54 - detail * 0.04)
+        : getPercentile(edges, 57 - detail * 0.04);
+
+      const lines = thresholdToLines(edges, w, h, threshold, 30);
+      const combined = blendKeepDark(sketchImg, lines, w, h);
+
+      drawImageDataToCanvas(combined, canvas);
+
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.globalAlpha = 0.06;
+      ctx.fillStyle = '#000';
+      for (let y = 0; y < h; y += 4) {
+        for (let x = 0; x < w; x += 4) {
+          if ((x + y) % 12 === 0) {
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    async function tryDrawFaceGuide(canvas, sourceCanvas) {
+      if (!('FaceDetector' in window)) return;
+
+      try {
+        const detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 3 });
+        const bitmap = await createImageBitmap(sourceCanvas);
+        const faces = await detector.detect(bitmap);
+        if (!faces || !faces.length) return;
+
+        const ctx = canvas.getContext('2d');
+        ctx.save();
+        ctx.strokeStyle = 'rgba(120,120,120,0.85)';
+        ctx.lineWidth = Math.max(1, canvas.width / 900);
+        ctx.setLineDash([8, 8]);
+
+        faces.forEach(face => {
+          const box = face.boundingBox;
+          const x = box.x;
+          const y = box.y;
+          const w = box.width;
+          const h = box.height;
+
+          drawOval(ctx, x, y, w, h);
+
+          ctx.beginPath();
+          ctx.moveTo(x + w / 2, y);
+          ctx.lineTo(x + w / 2, y + h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(x + w * 0.18, y + h * 0.42);
+          ctx.lineTo(x + w * 0.82, y + h * 0.42);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(x + w * 0.28, y + h * 0.68);
+          ctx.lineTo(x + w * 0.72, y + h * 0.68);
+          ctx.stroke();
+        });
+
+        ctx.restore();
+      } catch (e) {
+        console.warn('FaceDetector not usable here:', e);
+      }
+    }
+
+    function drawOval(ctx, x, y, w, h) {
+      ctx.beginPath();
+      ctx.ellipse(x + w / 2, y + h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    function downloadCanvas(canvas, filename) {
+      if (!canvas.width || !canvas.height) return;
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    async function downloadAllStages() {
+      for (let i = 0; i < stageCanvases.length; i++) {
+        const s = stageCanvases[i];
+        if (s.canvas.width > 1 && s.canvas.height > 1) {
+          downloadCanvas(s.canvas, `drawing_stage_${i + 1}.png`);
+          await new Promise(r => setTimeout(r, 250));
+        }
+      }
+    }
+  </script>
+</body>
+</html>
