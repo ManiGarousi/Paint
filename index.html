@@ -1,811 +1,90 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Drawing Master V3 — استاد سیاه‌قلم از روی عکس</title>
-  <meta name="theme-color" content="#141210" />
-  <style>
-    :root{
-      --bg:#f2eee7; --paper:#fffdf8; --paper2:#f9f4ea; --ink:#1f1b17; --muted:#756d65;
-      --line:#d8d0c5; --accent:#5d4533; --accent2:#8b715d; --shadow:0 12px 38px rgba(30,23,16,.08);
-      --ok:#255840;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; color:var(--ink);
-      background:radial-gradient(circle at 10% -10%,#fff 0,transparent 30%),linear-gradient(180deg,#f7f4ef,#ede7df);
-      font-family:Tahoma,Arial,sans-serif;
-    }
-    button,input,select{font:inherit}
-    .app{max-width:1280px;margin:auto;padding:14px 14px 32px}
-    .hero,.panel,.main{
-      background:rgba(255,253,248,.95); border:1px solid var(--line); box-shadow:var(--shadow);
-      border-radius:22px;
-    }
-    .hero{padding:18px}
-    .tag{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.08em}
-    h1{margin:6px 0 10px;font-size:clamp(24px,4vw,38px)}
-    .lead{color:var(--muted);line-height:1.95;font-size:14px;max-width:980px}
-    .toolbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:14px}
-    .control{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px}
-    .control label{display:block;font-size:13px;font-weight:800;margin-bottom:8px}
-    .control input[type=file],.control input[type=range],.control select{width:100%}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    button{
-      border:none;border-radius:12px;padding:11px 14px;background:var(--accent);color:#fff;font-weight:800;cursor:pointer
-    }
-    button.secondary{background:#6e6963}
-    button.soft{background:#eee7dc;color:#44372e}
-    button:disabled{opacity:.48;cursor:not-allowed}
-    .status{
-      margin-top:12px;padding:11px 13px;border-radius:13px;background:#fbf6ee;border:1px solid #eadcc7;color:#6b543a;
-      line-height:1.75;font-size:13px
-    }
-    .status.ok{background:#eef8f2;border-color:#cfe5d8;color:var(--ok)}
-    .workspace{display:grid;grid-template-columns:360px 1fr;gap:16px;margin-top:16px}
-    .panel{padding:14px}
-    .main{padding:14px}
-    .section-title{font-weight:900;margin-bottom:10px}
-    .refbox{
-      background:#eee6db;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:230px;
-      display:grid;place-items:center
-    }
-    .refbox img{display:block;max-width:100%;height:auto}
-    .placeholder{padding:22px;text-align:center;color:#8d8279;line-height:1.85}
-    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-    .metric{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px}
-    .metric b{display:block;font-size:12px;color:#4d4036}
-    .metric span{display:block;margin-top:5px;color:var(--muted);font-size:12px}
-    .teacher{
-      margin-top:12px;background:#f6efe5;border:1px solid #e5d6c3;border-radius:14px;padding:12px;
-      font-size:13px;line-height:1.95
-    }
-    .tabs{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
-    .tab{background:#eee7dc;border:1px solid #dfd5c8;border-radius:12px;padding:9px 10px;white-space:nowrap;color:#493d33}
-    .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .stagehead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin:8px 0 10px}
-    .stagehead h2{margin:0;font-size:22px}
-    .stagehead p{margin:4px 0 0;color:var(--muted);line-height:1.85;font-size:13px}
-    .canvaswrap{
-      min-height:500px;background:var(--paper2);border:1px solid var(--line);border-radius:18px;
-      display:grid;place-items:center;overflow:auto
-    }
-    canvas{display:block;max-width:100%;height:auto;background:#fff}
-    .footnote{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
-    .stage-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:5px;vertical-align:-1px}
-    .d1{background:#9a836a}.d2{background:#b8aa97}.d3{background:#41362d}.d4{background:#d6c7b2}
-    @media(max-width:980px){.workspace{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}}
-    @media(max-width:640px){.toolbar{grid-template-columns:1fr}.canvaswrap{min-height:340px}.app{padding:10px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#181512">
+<title>Drawing Master V4 AI — استاد طراحی هوشمند</title>
+<style>
+:root{--bg:#f1ede6;--paper:#fffdf8;--ink:#1f1b17;--muted:#736b64;--line:#d7cfc4;--accent:#5d4635;--soft:#eee7dc;--ok:#285c42;--warn:#8b5f28;--shadow:0 12px 34px rgba(33,25,18,.08)}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f7f4ef,#ede7df);color:var(--ink);font-family:Tahoma,Arial,sans-serif}button,input,select{font:inherit}.app{max-width:1280px;margin:auto;padding:14px 14px 34px}.hero,.panel,.main{background:rgba(255,253,248,.97);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.hero{padding:18px}.kicker{font-size:12px;font-weight:900;color:var(--accent);letter-spacing:.06em}h1{margin:6px 0 8px;font-size:clamp(25px,4vw,39px)}.lead{color:var(--muted);font-size:14px;line-height:1.95;max-width:1000px}.controls{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;margin-top:14px}.control{background:white;border:1px solid var(--line);border-radius:15px;padding:12px}.control label{font-weight:900;font-size:13px;display:block;margin-bottom:8px}.control select,.control input{width:100%}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}button{border:0;border-radius:12px;padding:11px 15px;background:var(--accent);color:white;font-weight:900;cursor:pointer}button.secondary{background:#716b65}button.soft{background:var(--soft);color:#493b31}button:disabled{opacity:.45;cursor:not-allowed}.status{margin-top:12px;border:1px solid #e5d7c4;background:#fbf6ed;color:#66503a;border-radius:13px;padding:11px 13px;font-size:13px;line-height:1.75}.status.ok{background:#edf7f1;border-color:#cde2d4;color:var(--ok)}.status.warn{background:#fff7e8;border-color:#ead5aa;color:#75501f}.progress{height:7px;border-radius:999px;background:#e7e0d6;overflow:hidden;margin-top:8px}.progress>i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}.workspace{display:grid;grid-template-columns:370px 1fr;gap:16px;margin-top:16px}.panel,.main{padding:14px}.section-title{font-weight:900;margin-bottom:10px}.refbox{min-height:240px;background:#eee7de;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:grid;place-items:center}.refbox img{max-width:100%;height:auto;display:block}.placeholder{text-align:center;color:#8c8177;line-height:1.9;padding:22px}.badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.badge{font-size:11px;background:#eee6db;color:#5c4a3c;padding:5px 8px;border-radius:999px;border:1px solid #ddd1c3}.teacher{margin-top:12px;padding:12px;background:#f6efe5;border:1px solid #e5d6c3;border-radius:14px;line-height:1.95;font-size:13px}.teacher h3{font-size:14px;margin:0 0 7px}.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ai-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px}.ai-card b{font-size:12px;display:block;color:#493c32}.ai-card span{font-size:12px;color:var(--muted);display:block;margin-top:5px;line-height:1.6}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:7px}.tab{white-space:nowrap;background:#eee7dd;color:#4a3d33;border:1px solid #dfd5c8;padding:9px 10px;border-radius:12px}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}.stagehead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin:8px 0 10px}.stagehead h2{margin:0;font-size:22px}.stagehead p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.85}.canvaswrap{min-height:500px;background:#f0ebe3;border:1px solid var(--line);border-radius:18px;display:grid;place-items:center;overflow:auto}canvas{display:block;max-width:100%;height:auto;background:#fff}.lesson{margin-top:10px;background:#f8f2e9;border:1px solid #e5d8c8;border-radius:14px;padding:12px;line-height:1.9;font-size:13px}.lesson b{color:#503f32}.stage-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.debug{margin-top:10px;font-size:11px;color:#8b8177}details{margin-top:10px}pre{direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;background:#1e1b18;color:#eee5d9;padding:10px;border-radius:12px;font-size:11px}@media(max-width:980px){.workspace{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}}@media(max-width:620px){.controls{grid-template-columns:1fr}.app{padding:10px}.canvaswrap{min-height:340px}.ai-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="app">
-  <section class="hero">
-    <div class="tag">DRAWING MASTER V3 · CHARCOAL TEACHER ENGINE</div>
-    <h1>استاد سیاه‌قلم از روی عکس</h1>
-    <div class="lead">
-      این نسخه برای مرحله‌های ۳ تا ۵ دیگر به فیلترهای ساده متکی نیست. ابتدا هندسه‌ی واقعی چهره/بدن
-      از روی landmarkها استخراج می‌شود، بعد ساختار به سبک آموزش آکادمیک به
-      <b>Envelope → Construction → Planes → Shadow Map → Final Charcoal</b> تبدیل می‌شود.
-    </div>
-
-    <div class="toolbar">
-      <div class="control">
-        <label>عکس / دوربین</label>
-        <input id="fileInput" type="file" accept="image/*" capture="environment" />
-      </div>
-      <div class="control">
-        <label>سبک سوژه</label>
-        <select id="focus">
-          <option value="auto">خودکار</option>
-          <option value="portrait">پرتره</option>
-          <option value="figure">فیگور</option>
-          <option value="generic">عمومی</option>
-        </select>
-      </div>
-      <div class="control">
-        <label>شدت جزئیات نهایی <span id="detailVal">78</span>%</label>
-        <input id="detail" type="range" min="40" max="100" value="78" />
-      </div>
-      <div class="control">
-        <label>شدت سیاه‌قلم <span id="charcoalVal">72</span>%</label>
-        <input id="charcoal" type="range" min="35" max="100" value="72" />
-      </div>
-      <div class="control">
-        <label>رنگ کاغذ</label>
-        <select id="paper">
-          <option value="warm" selected>کاغذ گرم</option>
-          <option value="white">سفید</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button id="buildBtn" disabled>ساخت ۵ مرحله حرفه‌ای</button>
-      <button id="saveBtn" class="secondary" disabled>ذخیره مرحله فعلی</button>
-      <button id="clearBtn" class="soft">پاک کردن</button>
-    </div>
-    <div id="status" class="status">در حال بارگذاری موتور هوشمند MediaPipe…</div>
-  </section>
-
-  <section class="workspace">
-    <aside class="panel">
-      <div class="section-title">عکس مرجع</div>
-      <div id="refBox" class="refbox">
-        <div class="placeholder">یک عکس انتخاب کن.<br>برای بهترین نتیجه، چهره واضح، نور خوب و وضوح مناسب باشد.</div>
-      </div>
-
-      <div class="section-title" style="margin-top:14px">تحلیل استاد</div>
-      <div class="metrics" id="metrics">
-        <div class="metric"><b>نوع تحلیل</b><span>—</span></div>
-        <div class="metric"><b>چهره</b><span>—</span></div>
-        <div class="metric"><b>بدن</b><span>—</span></div>
-        <div class="metric"><b>زاویه چشم‌ها</b><span>—</span></div>
-        <div class="metric"><b>نسبت سر</b><span>—</span></div>
-        <div class="metric"><b>شدت سایه غالب</b><span>—</span></div>
-      </div>
-      <div id="teacher" class="teacher">
-        این بخش برای هر عکس، مثل توضیح یک استاد، راهبرد ترسیم را می‌گوید.
-      </div>
-    </aside>
-
-    <main class="main">
-      <div class="tabs" id="tabs"></div>
-      <div class="stagehead">
-        <div>
-          <h2 id="stageTitle">مرحله ۱ — Envelope & Gesture</h2>
-          <p id="stageDesc">ابتدا شکل کلی و حرکت سوژه را بگیر، نه جزئیات را.</p>
-        </div>
-        <div id="stageNum" style="font-size:12px;color:var(--muted)">1 / 5</div>
-      </div>
-      <div class="canvaswrap"><canvas id="canvas"></canvas></div>
-      <div class="footnote">
-        <span><i class="dot d1"></i>خط ساخت</span>
-        <span><i class="dot d2"></i>خط راهنما</span>
-        <span><i class="dot d4"></i>توده سایه</span>
-        <span><i class="dot d3"></i>خط نهایی</span>
-      </div>
-      <div class="stage-actions">
-        <button id="prevBtn" class="soft">مرحله قبل</button>
-        <button id="nextBtn">مرحله بعد</button>
-      </div>
-    </main>
-  </section>
+<section class="hero">
+  <div class="kicker">DRAWING MASTER V4 · LOCAL VISION AI + MEDIAPIPE</div>
+  <h1>استاد طراحی هوشمند روی GitHub Pages</h1>
+  <div class="lead">عکس روی دستگاه تحلیل می‌شود. مدل بینایی SmolVLM برای هر عکس یک برنامه‌ی آموزشی اختصاصی می‌سازد، و MediaPipe هندسه‌ی واقعی چهره و بدن را استخراج می‌کند. هیچ API پولی یا سرور اختصاصی لازم نیست.</div>
+  <div class="controls">
+    <div class="control"><label>عکس / دوربین گوشی</label><input id="fileInput" type="file" accept="image/*" capture="environment"></div>
+    <div class="control"><label>مدل AI</label><select id="modelMode"><option value="auto" selected>Auto — 500M / fallback 256M</option><option value="quality">Quality — 500M</option><option value="lite">Lite — 256M</option></select></div>
+    <div class="control"><label>تمرکز</label><select id="focus"><option value="auto">خودکار</option><option value="portrait" selected>پرتره / انسان</option><option value="figure">فیگور کامل</option><option value="generic">سوژه عمومی</option></select></div>
+    <div class="control"><label>کاغذ</label><select id="paper"><option value="warm" selected>گرم</option><option value="white">سفید</option></select></div>
+  </div>
+  <div class="actions"><button id="analyzeBtn" disabled>تحلیل با AI و ساخت ۵ مرحله</button><button id="saveBtn" class="secondary" disabled>ذخیره مرحله فعلی</button><button id="clearBtn" class="soft">پاک کردن</button></div>
+  <div id="status" class="status">در حال آماده‌سازی MediaPipe… مدل SmolVLM فقط هنگام اولین تحلیل دانلود می‌شود.</div><div class="progress"><i id="bar"></i></div>
+</section>
+<section class="workspace">
+  <aside class="panel">
+    <div class="section-title">عکس مرجع</div><div id="refBox" class="refbox"><div class="placeholder">یک عکس انتخاب کن.</div></div>
+    <div class="badges"><span class="badge" id="hwBadge">AI: منتظر</span><span class="badge" id="faceBadge">Face: —</span><span class="badge" id="poseBadge">Pose: —</span></div>
+    <div class="section-title" style="margin-top:14px">تحلیل استاد AI</div>
+    <div class="ai-grid"><div class="ai-card"><b>سوژه / زاویه</b><span id="subjectInfo">—</span></div><div class="ai-card"><b>نور</b><span id="lightInfo">—</span></div><div class="ai-card"><b>کلید شباهت</b><span id="likenessInfo">—</span></div><div class="ai-card"><b>اشتباه مهم</b><span id="avoidInfo">—</span></div></div>
+    <div class="teacher" id="teacher"><h3>راهنمای استاد</h3>پس از تحلیل، توصیه‌ی مخصوص همین عکس اینجا نمایش داده می‌شود.</div>
+    <details><summary>خروجی خام AI</summary><pre id="rawAI">—</pre></details>
+  </aside>
+  <main class="main">
+    <div class="tabs" id="tabs"></div>
+    <div class="stagehead"><div><h2 id="stageTitle">مرحله ۱</h2><p id="stageDesc">ابتدا عکس را تحلیل کن.</p></div><span id="stageNum" class="badge">1 / 5</span></div>
+    <div class="canvaswrap"><canvas id="canvas"></canvas></div>
+    <div class="lesson" id="lesson"><b>درس این مرحله:</b> —</div>
+    <div class="stage-actions"><button id="prevBtn" class="soft">مرحله قبل</button><button id="nextBtn">مرحله بعد</button></div>
+    <div class="debug">AI تصویر تولید نمی‌کند؛ AI برنامه‌ی آموزشی و تصمیم‌های هنری را می‌سازد و موتور رسم، مرحله‌ها را از هندسه و تصویر اصلی render می‌کند.</div>
+  </main>
+</section>
 </div>
-
 <script type="module">
-import { FaceLandmarker, PoseLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/+esm";
-
-const $ = s => document.querySelector(s);
-const fileInput=$("#fileInput"), buildBtn=$("#buildBtn"), saveBtn=$("#saveBtn"), clearBtn=$("#clearBtn");
-const detail=$("#detail"), detailVal=$("#detailVal"), charcoal=$("#charcoal"), charcoalVal=$("#charcoalVal");
-const paper=$("#paper"), focus=$("#focus");
-const statusEl=$("#status"), refBox=$("#refBox"), metrics=$("#metrics"), teacher=$("#teacher");
-const canvas=$("#canvas"), ctx=canvas.getContext("2d",{willReadFrequently:true});
-const tabs=$("#tabs"), stageTitle=$("#stageTitle"), stageDesc=$("#stageDesc"), stageNum=$("#stageNum");
-const prevBtn=$("#prevBtn"), nextBtn=$("#nextBtn");
-
-detail.oninput=()=>detailVal.textContent=detail.value;
-charcoal.oninput=()=>charcoalVal.textContent=charcoal.value;
-
-let faceLandmarker=null, poseLandmarker=null;
-let image=null, face=null, pose=null, stages=[], stageIndex=0;
-let srcCanvas=document.createElement("canvas");
-let sctx=srcCanvas.getContext("2d",{willReadFrequently:true});
-
-const STAGES = [
-  ["مرحله ۱ — Envelope & Gesture","فرم کلی، حرکت و نسبت‌های اصلی را کمرنگ بگیر. هنوز سراغ جزئیات نرو."],
-  ["مرحله ۲ — Construction","بیضی سر، محور مرکزی، خط چشم، بینی، دهان و اسکلت اصلی بدن را دقیق کن."],
-  ["مرحله ۳ — Planes & Feature Build","فرم‌ها را به صفحات و حجم‌های قابل درک تبدیل کن؛ چشم، بینی، لب و گونه منطقی ساخته می‌شوند."],
-  ["مرحله ۴ — Shadow Map","توده‌های روشن/تیره‌ی اصلی مشخص می‌شوند تا سایه‌پردازی کنترل‌شده و حرفه‌ای باشد."],
-  ["مرحله ۵ — Final Charcoal","خط، سایه، بافت و هاشور با هم ترکیب می‌شوند تا خروجی شبیه سیاه‌قلم آموزشی شود."]
-];
-
-const FACE_OVAL=[10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109];
-const LEFT_EYE=[33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246];
-const RIGHT_EYE=[362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398];
-const LEFT_BROW=[70,63,105,66,107,55,65,52,53,46];
-const RIGHT_BROW=[336,296,334,293,300,285,295,282,283,276];
-const OUTER_LIPS=[61,146,91,181,84,17,314,405,321,375,291,308,324,318,402,317,14,87,178,88,95,61];
-const INNER_LIPS=[78,95,88,178,87,14,317,402,318,324,308,291,375,321,405,314,17,84,181,91,146,61];
-const NOSE_RIDGE=[168,6,197,195,5,4,1,2];
-const NOSE_BASE=[98,97,2,326,327];
-const LEFT_IRIS=[468,469,470,471,472];
-const RIGHT_IRIS=[473,474,475,476,477];
-const POSE_EDGES=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[27,29],[29,31],[24,26],[26,28],[28,30],[30,32]];
-
-function setStatus(t,ok=false){statusEl.textContent=t;statusEl.className="status"+(ok?" ok":"");}
-function nextPaint(){return new Promise(r=>requestAnimationFrame(r));}
-
-async function init(){
-  try{
-    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm");
-    setStatus("در حال بارگذاری مدل چهره…");
-    faceLandmarker = await FaceLandmarker.createFromOptions(vision,{
-      baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task",delegate:"GPU"},
-      runningMode:"IMAGE", numFaces:3, outputFaceBlendshapes:false, outputFacialTransformationMatrixes:true
-    });
-    setStatus("در حال بارگذاری مدل فیگور…");
-    try{
-      poseLandmarker = await PoseLandmarker.createFromOptions(vision,{
-        baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task",delegate:"GPU"},
-        runningMode:"IMAGE", numPoses:2
-      });
-    }catch(e){
-      poseLandmarker = await PoseLandmarker.createFromOptions(vision,{
-        baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task",delegate:"CPU"},
-        runningMode:"IMAGE", numPoses:2
-      });
-    }
-    setStatus("موتور حرفه‌ای آماده شد. حالا عکس را انتخاب کن.",true);
-    if(image) buildBtn.disabled=false;
-  }catch(err){
-    console.error(err);
-    setStatus("بارگذاری مدل ناموفق بود. برای اجرای اولیه اتصال اینترنت لازم است.");
-    if(image) buildBtn.disabled=false;
-  }
-}
-init();
-
-fileInput.addEventListener("change", e=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  const url=URL.createObjectURL(f);
-  const img=new Image();
-  img.onload=()=>{
-    image=img;
-    refBox.innerHTML="";
-    const preview=img.cloneNode(); preview.src=url; refBox.appendChild(preview);
-    buildBtn.disabled=false;
-    setStatus(faceLandmarker ? "عکس آماده است. روی «ساخت ۵ مرحله حرفه‌ای» بزن." : "عکس آماده است؛ مدل هنوز در حال بارگذاری است.");
-  };
-  img.src=url;
-});
-buildBtn.addEventListener("click", buildAll);
-saveBtn.addEventListener("click", saveCurrent);
-clearBtn.addEventListener("click", clearAll);
-prevBtn.addEventListener("click",()=>showStage(Math.max(0,stageIndex-1)));
-nextBtn.addEventListener("click",()=>showStage(Math.min(4,stageIndex+1)));
-
-function clearAll(){
-  image=null; face=null; pose=null; stages=[]; stageIndex=0; fileInput.value="";
-  refBox.innerHTML='<div class="placeholder">یک عکس انتخاب کن.<br>برای بهترین نتیجه، چهره واضح، نور خوب و وضوح مناسب باشد.</div>';
-  buildBtn.disabled=true; saveBtn.disabled=true;
-  canvas.width=1; canvas.height=1;
-  [...metrics.querySelectorAll("span")].forEach(s=>s.textContent="—");
-  teacher.textContent="این بخش برای هر عکس، مثل توضیح یک استاد، راهبرد ترسیم را می‌گوید.";
-  tabs.innerHTML="";
-  setStatus(faceLandmarker ? "موتور آماده است. عکس جدید انتخاب کن." : "در انتظار بارگذاری موتور…");
-}
-
-async function buildAll(){
-  if(!image) return;
-  buildBtn.disabled=true;
-  setStatus("۱/۴ — آماده‌سازی تصویر…");
-  await nextPaint();
-  fitSource(image,1400);
-
-  setStatus("۲/۴ — تحلیل چهره و بدن…");
-  await nextPaint();
-  face = detectBestFace();
-  pose = detectBestPose();
-
-  setStatus("۳/۴ — ساخت مراحل آموزش استاد…");
-  await nextPaint();
-  stages = [
-    stageEnvelope(),
-    stageConstruction(),
-    stagePlanes(),
-    stageShadowMap(),
-    stageFinalCharcoal()
-  ];
-
-  setStatus("۴/۴ — آماده شد.", true);
-  updateAnalysis();
-  buildTabs();
-  showStage(0);
-  saveBtn.disabled=false;
-  buildBtn.disabled=false;
-}
-
-function fitSource(img,maxSide){
-  const scale=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
-  srcCanvas.width=Math.round((img.naturalWidth||img.width)*scale);
-  srcCanvas.height=Math.round((img.naturalHeight||img.height)*scale);
-  sctx.clearRect(0,0,srcCanvas.width,srcCanvas.height);
-  sctx.drawImage(img,0,0,srcCanvas.width,srcCanvas.height);
-}
-function detectBestFace(){
-  try{
-    const res=faceLandmarker?.detect(srcCanvas)?.faceLandmarks || [];
-    if(!res.length) return null;
-    return res.map(lm=>({lm,area:boxOfIndices(lm,FACE_OVAL).w*boxOfIndices(lm,FACE_OVAL).h})).sort((a,b)=>b.area-a.area)[0].lm;
-  }catch(e){console.warn(e);return null;}
-}
-function detectBestPose(){
-  try{return poseLandmarker?.detect(srcCanvas)?.landmarks?.[0] || null}catch(e){console.warn(e);return null}
-}
-
-function P(lm,i){return {x:lm[i].x*srcCanvas.width,y:lm[i].y*srcCanvas.height}}
-function points(lm,arr){return arr.filter(i=>lm[i]).map(i=>P(lm,i))}
-function avg(arr){return {x:arr.reduce((s,p)=>s+p.x,0)/arr.length,y:arr.reduce((s,p)=>s+p.y,0)/arr.length}}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-function boxOfPts(pts){
-  return {x:Math.min(...pts.map(p=>p.x)), y:Math.min(...pts.map(p=>p.y)),
-          w:Math.max(...pts.map(p=>p.x))-Math.min(...pts.map(p=>p.x)),
-          h:Math.max(...pts.map(p=>p.y))-Math.min(...pts.map(p=>p.y))}
-}
-function boxOfIndices(lm,idx){return boxOfPts(points(lm,idx))}
-function paperColor(){return paper.value==="warm" ? "#fbf7ee" : "#ffffff"}
-
-function newStage(){
-  const c=document.createElement("canvas");
-  c.width=srcCanvas.width; c.height=srcCanvas.height;
-  const x=c.getContext("2d",{willReadFrequently:true});
-  x.fillStyle=paperColor(); x.fillRect(0,0,c.width,c.height);
-  x.lineCap="round"; x.lineJoin="round";
-  return {c,x};
-}
-function line(x,a,b,color,w=1,d=[]){x.save();x.strokeStyle=color;x.lineWidth=w;x.setLineDash(d);x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();x.restore();}
-function path(x,lm,arr,color,w=1.2,closed=false,d=[]){
-  const pts=points(lm,arr); if(pts.length<2) return;
-  x.save(); x.strokeStyle=color; x.lineWidth=w; x.setLineDash(d); x.beginPath();
-  x.moveTo(pts[0].x,pts[0].y); for(let i=1;i<pts.length;i++) x.lineTo(pts[i].x,pts[i].y);
-  if(closed) x.closePath(); x.stroke(); x.restore();
-}
-function poly(x,pts,color,w=1.2,closed=true,fill=null,d=[]){
-  if(pts.length<2) return;
-  x.save(); x.strokeStyle=color; x.lineWidth=w; x.setLineDash(d); x.beginPath();
-  x.moveTo(pts[0].x,pts[0].y); for(let i=1;i<pts.length;i++) x.lineTo(pts[i].x,pts[i].y);
-  if(closed) x.closePath();
-  if(fill){x.fillStyle=fill; x.fill();}
-  x.stroke(); x.restore();
-}
-function textLabel(x,t,p){
-  x.save();
-  const size=Math.max(11,srcCanvas.width/90);
-  x.font=`${size}px Tahoma`;
-  const w=x.measureText(t).width+10, h=size+8;
-  x.fillStyle="rgba(255,252,246,.88)"; x.fillRect(p.x,p.y-h,w,h);
-  x.fillStyle="#645242"; x.fillText(t,p.x+5,p.y-5);
-  x.restore();
-}
-
-function stageEnvelope(){
-  const {c,x}=newStage();
-  if(face){
-    const box=boxOfIndices(face,FACE_OVAL);
-    const center={x:box.x+box.w/2,y:box.y+box.h/2};
-    const rx=box.w*0.52, ry=box.h*0.52;
-    x.save(); x.strokeStyle="#987f64"; x.lineWidth=Math.max(1.2,c.width/900); x.setLineDash([10,8]);
-    x.beginPath(); x.ellipse(center.x,center.y,rx,ry,0,0,Math.PI*2); x.stroke(); x.restore();
-
-    // envelope polygon
-    const jaw = points(face,[10,338,251,356,454,361,397,152,172,132,234,54,67,109]);
-    poly(x,jaw,"#9c8468",Math.max(1.2,c.width/900),true,null,[7,6]);
-
-    const eyeL=avg(points(face,LEFT_EYE)), eyeR=avg(points(face,RIGHT_EYE));
-    const mouth=avg(points(face,OUTER_LIPS));
-    line(x,{x:center.x,y:box.y-8},{x:center.x,y:box.y+box.h+8},"#b5a38f",1,[8,7]);
-    line(x,{x:eyeL.x-box.w*.35,y:eyeL.y},{x:eyeR.x+box.w*.35,y:eyeR.y},"#b5a38f",1,[8,7]);
-    line(x,{x:mouth.x-box.w*.22,y:mouth.y},{x:mouth.x+box.w*.22,y:mouth.y},"#b5a38f",1,[6,7]);
-
-    textLabel(x,"فرم کلی سر",{x:box.x,y:box.y});
-    textLabel(x,"خط چشم",{x:eyeL.x,y:eyeL.y-8});
-    textLabel(x,"توده دهان",{x:mouth.x-12,y:mouth.y+26});
-  } else if(pose){
-    drawGesture(x, pose, false);
-  } else {
-    drawGenericEnvelope(x);
-  }
-  return c;
-}
-
-function stageConstruction(){
-  const {c,x}=newStage();
-  if(face){
-    drawFaceConstruction(x, face, true);
-  }
-  if(pose){
-    drawGesture(x, pose, true);
-  }
-  if(!face && !pose){
-    drawGenericEnvelope(x);
-    overlayEdges(x,.94,3,0.22);
-  }
-  return c;
-}
-
-function stagePlanes(){
-  const {c,x}=newStage();
-  if(face){
-    // clean contour
-    path(x,face,FACE_OVAL,"#342d27",Math.max(1.6,c.width/780),true);
-    path(x,face,LEFT_BROW,"#58493c",Math.max(1.2,c.width/900));
-    path(x,face,RIGHT_BROW,"#58493c",Math.max(1.2,c.width/900));
-
-    // facial planes - approximate academic simplification
-    const browL=avg(points(face,LEFT_BROW)), browR=avg(points(face,RIGHT_BROW));
-    const eyeL=avg(points(face,LEFT_EYE)), eyeR=avg(points(face,RIGHT_EYE));
-    const noseTop=P(face,6), noseTip=P(face,1), noseL=P(face,98), noseR=P(face,327);
-    const cheekL=P(face,234), cheekR=P(face,454);
-    const mouthL=P(face,61), mouthR=P(face,291), mouthTop=P(face,0), mouthBottom=P(face,17);
-    const chin=P(face,152);
-
-    // eye sockets
-    const leftSocket=[P(face,70),P(face,55),eyeL,P(face,50),P(face,123),P(face,205)];
-    const rightSocket=[P(face,285),P(face,300),eyeR,P(face,280),P(face,352),P(face,425)];
-    poly(x,leftSocket,"#8f7961",1.2,true,"rgba(215,202,181,.18)");
-    poly(x,rightSocket,"#8f7961",1.2,true,"rgba(215,202,181,.18)");
-
-    // nose wedge
-    const nosePlane=[noseTop,noseL,noseTip,noseR];
-    poly(x,nosePlane,"#7f6b57",1.3,true,"rgba(210,194,171,.14)");
-    line(x,noseTop,noseTip,"#7a6754",1.1);
-    line(x,noseL,noseR,"#aa9985",1,[5,5]);
-
-    // cheek planes
-    poly(x,[cheekL,browL,noseL,mouthL,P(face,172)],"#a18d75",1.1,false);
-    poly(x,[cheekR,browR,noseR,mouthR,P(face,397)],"#a18d75",1.1,false);
-
-    // muzzle / mouth block
-    poly(x,[mouthL,mouthTop,mouthR,mouthBottom],"#8b7560",1.2,true,"rgba(215,203,186,.1)");
-    path(x,face,OUTER_LIPS,"#332c26",1.2,true);
-    path(x,face,INNER_LIPS,"#665447",1.0,true);
-
-    // eyes
-    path(x,face,LEFT_EYE,"#2f2924",1.25,true);
-    path(x,face,RIGHT_EYE,"#2f2924",1.25,true);
-    path(x,face,LEFT_IRIS,"#433931",.9,true);
-    path(x,face,RIGHT_IRIS,"#433931",.9,true);
-    path(x,face,NOSE_RIDGE,"#5f5042",1.1);
-    path(x,face,NOSE_BASE,"#58493c",1.1);
-
-    line(x,mouthTop,chin,"#c0b1a0",1,[6,6]);
-  } else {
-    overlayEdges(x,.82,2,0.62);
-  }
-  return c;
-}
-
-function stageShadowMap(){
-  const {c,x}=newStage();
-  // light graphite base
-  tonePosterize(x, 5, .90);
-
-  if(face){
-    const regions = buildFaceShadowRegions(face);
-    regions.forEach(r=>{
-      const tone = shadeFromRegion(r.sample);
-      fillPolygon(x, r.pts, toneFill(tone, .42 + (+charcoal.value/200)), "#a99680");
-    });
-    // main feature lines over shadow
-    path(x,face,LEFT_EYE,"#2d2621",1.25,true);
-    path(x,face,RIGHT_EYE,"#2d2621",1.25,true);
-    path(x,face,OUTER_LIPS,"#3b3129",1.15,true);
-    path(x,face,FACE_OVAL,"#463b32",1.15,true);
-    path(x,face,NOSE_BASE,"#4a3e35",1.05);
-  } else {
-    // generic shadow masses
-    addHatchingFromTones(x, 11, .16);
-    overlayEdges(x,.90,1.4,0.28);
-  }
-  return c;
-}
-
-function stageFinalCharcoal(){
-  const {c,x}=newStage();
-  charcoalRender(x);
-
-  if(face){
-    // reassert clean landmarks
-    path(x,face,FACE_OVAL,"rgba(40,35,31,.9)",Math.max(1.1,c.width/1100),true);
-    path(x,face,LEFT_EYE,"rgba(34,29,25,.95)",1.1,true);
-    path(x,face,RIGHT_EYE,"rgba(34,29,25,.95)",1.1,true);
-    path(x,face,LEFT_BROW,"rgba(46,40,35,.8)",1.0);
-    path(x,face,RIGHT_BROW,"rgba(46,40,35,.8)",1.0);
-    path(x,face,OUTER_LIPS,"rgba(43,36,31,.9)",1.0,true);
-    path(x,face,INNER_LIPS,"rgba(54,44,37,.7)",.9,true);
-    path(x,face,NOSE_RIDGE,"rgba(71,60,51,.65)",.9);
-    path(x,face,NOSE_BASE,"rgba(71,60,51,.75)",1.0);
-  }
-  addCrossContourHatching(x);
-  return c;
-}
-
-function drawFaceConstruction(x,lm,strong){
-  const box=boxOfIndices(lm,FACE_OVAL);
-  const eyeL=avg(points(lm,LEFT_EYE)), eyeR=avg(points(lm,RIGHT_EYE));
-  const mouthL=P(lm,61), mouthR=P(lm,291), mouthTop=P(lm,0), mouthBottom=P(lm,17);
-  const noseL=P(lm,98), noseR=P(lm,327), noseTip=P(lm,1);
-  const center={x:box.x+box.w/2,y:box.y+box.h/2};
-
-  x.save(); x.strokeStyle="#8e775d"; x.lineWidth=Math.max(1.2,srcCanvas.width/900); x.setLineDash([8,7]);
-  x.beginPath(); x.ellipse(center.x,center.y,box.w*.51,box.h*.51,0,0,Math.PI*2); x.stroke(); x.restore();
-  path(x,lm,FACE_OVAL,"#8f7a64",1.1,true,[5,5]);
-  path(x,lm,[10,9,168,6,197,195,5,4,1,2,0,17,152],"#b5a28e",1,false,[7,7]);
-
-  line(x,{x:eyeL.x-box.w*.3,y:eyeL.y},{x:eyeR.x+box.w*.3,y:eyeR.y},"#b7a693",1,[7,6]);
-  line(x,noseL,noseR,"#b7a693",1,[6,6]);
-  line(x,mouthL,mouthR,"#b7a693",1,[6,6]);
-
-  ellipseFromPoints(x, points(lm,LEFT_EYE), "#8f785f",1.1);
-  ellipseFromPoints(x, points(lm,RIGHT_EYE), "#8f785f",1.1);
-  ellipseFromPoints(x, points(lm,OUTER_LIPS), "#8f785f",1.1);
-  path(x,lm,LEFT_BROW,"#8f785f",1.0);
-  path(x,lm,RIGHT_BROW,"#8f785f",1.0);
-  path(x,lm,NOSE_RIDGE,"#7e6a57",1.0);
-  path(x,lm,NOSE_BASE,"#7e6a57",1.0);
-  if(strong){
-    path(x,lm,LEFT_EYE,"#352f29",1.25,true);
-    path(x,lm,RIGHT_EYE,"#352f29",1.25,true);
-    path(x,lm,OUTER_LIPS,"#3b3128",1.2,true);
-  } else {
-    textLabel(x,"عرض بینی",{x:noseL.x,y:noseL.y-10});
-    textLabel(x,"اندازه دهان",{x:mouthL.x,y:mouthBottom.y+24});
-  }
-}
-function ellipseFromPoints(x,pts,color,w){
-  const b=boxOfPts(pts);
-  x.save(); x.strokeStyle=color; x.lineWidth=w; x.beginPath();
-  x.ellipse(b.x+b.w/2,b.y+b.h/2,b.w/2,b.h/2,0,0,Math.PI*2); x.stroke(); x.restore();
-}
-function drawGesture(x,pose,strong){
-  const W=srcCanvas.width,H=srcCanvas.height;
-  const p=i=>({x:pose[i].x*W,y:pose[i].y*H});
-  const vis=i=>(pose[i].visibility??1)>.3;
-  const col=strong?"#4a3e34":"#9a8268";
-  const lw=strong?Math.max(1.7,W/700):Math.max(1.2,W/900);
-  POSE_EDGES.forEach(([a,b])=>{ if(vis(a)&&vis(b)) line(x,p(a),p(b),col,lw,strong?[]:[7,5]); });
-  if(vis(11)&&vis(12)&&vis(23)&&vis(24)){
-    const s={x:(p(11).x+p(12).x)/2,y:(p(11).y+p(12).y)/2}, h={x:(p(23).x+p(24).x)/2,y:(p(23).y+p(24).y)/2};
-    line(x,s,h,"#b6a28d",1,[9,7]);
-  }
-}
-function drawGenericEnvelope(x){
-  overlayEdges(x,.95,4,0.18);
-  const W=srcCanvas.width,H=srcCanvas.height;
-  x.save();x.strokeStyle="#ad9882";x.lineWidth=1.1;x.setLineDash([8,7]);
-  x.strokeRect(W*.12,H*.12,W*.76,H*.76); x.restore();
-}
-
-function overlayEdges(target,percentile=.85,blurRadius=2,alpha=.5){
-  const W=srcCanvas.width,H=srcCanvas.height;
-  const im=sctx.getImageData(0,0,W,H);
-  const gray=new Float32Array(W*H);
-  for(let i=0,j=0;i<im.data.length;i+=4,j++) gray[j]=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
-  const blur=boxBlur(gray,W,H,Math.max(1,Math.round(blurRadius)));
-  const edge=sobel(blur,W,H);
-  const sample=[]; const stride=Math.max(1,Math.floor(edge.length/50000));
-  for(let i=0;i<edge.length;i+=stride) sample.push(edge[i]);
-  sample.sort((a,b)=>a-b);
-  const th=sample[Math.floor(sample.length*percentile)] || 20;
-  target.save(); target.globalAlpha=alpha; target.strokeStyle="#2f2924"; target.lineWidth=1;
-  for(let y=1;y<H-1;y+=1){
-    target.beginPath();
-    let open=false;
-    for(let x=1;x<W-1;x++){
-      const idx=y*W+x;
-      if(edge[idx]>th){
-        if(!open){target.moveTo(x,y); open=true;}
-        else target.lineTo(x,y);
-      } else open=false;
-    }
-    target.stroke();
-  }
-  target.restore();
-}
-
-function tonePosterize(x,levels=5,alpha=.95){
-  const W=srcCanvas.width,H=srcCanvas.height;
-  const im=sctx.getImageData(0,0,W,H);
-  const out=x.createImageData(W,H);
-  const step=255/(levels-1);
-  for(let i=0;i<im.data.length;i+=4){
-    const g=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
-    let q=Math.round(g/step)*step;
-    const warm=paper.value==="warm";
-    out.data[i]=warm?Math.min(255,q+6):q;
-    out.data[i+1]=warm?Math.min(255,q+4):q;
-    out.data[i+2]=warm?Math.max(0,q-1):q;
-    out.data[i+3]=255*alpha;
-  }
-  x.putImageData(out,0,0);
-}
-
-function buildFaceShadowRegions(lm){
-  const E=(ids)=>points(lm,ids);
-  const eyeL=avg(E(LEFT_EYE)), eyeR=avg(E(RIGHT_EYE));
-  const browL=avg(E(LEFT_BROW)), browR=avg(E(RIGHT_BROW));
-  const noseTip=P(lm,1), noseTop=P(lm,6), noseL=P(lm,98), noseR=P(lm,327);
-  const cheekL=P(lm,234), cheekR=P(lm,454);
-  const mouthL=P(lm,61), mouthR=P(lm,291), mouthTop=P(lm,0), mouthBottom=P(lm,17);
-  const chin=P(lm,152), jawL=P(lm,172), jawR=P(lm,397);
-
-  return [
-    {pts:[P(lm,70),P(lm,105),P(lm,66),eyeL,P(lm,123),P(lm,50)], sample:[eyeL,P(lm,50),P(lm,123)]}, // left eye socket
-    {pts:[P(lm,336),P(lm,334),P(lm,293),eyeR,P(lm,280),P(lm,352)], sample:[eyeR,P(lm,280),P(lm,352)]}, // right eye socket
-    {pts:[noseTop,noseL,noseTip,noseR], sample:[noseTip,noseL,noseR]}, // nose plane
-    {pts:[cheekL,eyeL,noseL,mouthL,jawL], sample:[cheekL,mouthL,noseL]}, // left cheek
-    {pts:[cheekR,eyeR,noseR,mouthR,jawR], sample:[cheekR,mouthR,noseR]}, // right cheek
-    {pts:[mouthL,mouthTop,mouthR,mouthBottom], sample:[mouthTop,mouthBottom,mouthL]}, // mouth block
-    {pts:[mouthBottom,mouthL,mouthR,chin], sample:[mouthBottom,chin,mouthL]} // chin shadow
-  ];
-}
-function fillPolygon(x,pts,fill,stroke="rgba(120,100,80,.45)"){
-  if(!pts.length) return;
-  x.save();
-  x.fillStyle=fill; x.strokeStyle=stroke; x.lineWidth=0.8;
-  x.beginPath(); x.moveTo(pts[0].x,pts[0].y); for(let i=1;i<pts.length;i++)x.lineTo(pts[i].x,pts[i].y);
-  x.closePath(); x.fill(); x.stroke();
-  x.restore();
-}
-function shadeFromRegion(samplePts){
-  const vals=samplePts.map(p=>sampleGray(p.x,p.y));
-  return vals.reduce((a,b)=>a+b,0)/vals.length;
-}
-function sampleGray(x,y){
-  const px=Math.max(0,Math.min(srcCanvas.width-1,Math.round(x)));
-  const py=Math.max(0,Math.min(srcCanvas.height-1,Math.round(y)));
-  const d=sctx.getImageData(px,py,1,1).data;
-  return .299*d[0]+.587*d[1]+.114*d[2];
-}
-function toneFill(gray,a){
-  const base = Math.max(35, Math.min(225, gray));
-  const v = Math.round(base*.78);
-  return `rgba(${v},${v-2},${Math.max(0,v-8)},${a})`;
-}
-
-function addHatchingFromTones(x, step=11, alpha=.15){
-  const W=srcCanvas.width,H=srcCanvas.height;
-  x.save(); x.strokeStyle=`rgba(45,39,34,${alpha})`; x.lineWidth=1;
-  for(let yy=0;yy<H;yy+=step){
-    for(let xx=0;xx<W;xx+=step){
-      const g=sampleGray(xx,yy);
-      if(g<180){ x.beginPath(); x.moveTo(xx,yy+step); x.lineTo(xx+step,yy); x.stroke(); }
-      if(g<120){ x.beginPath(); x.moveTo(xx,yy); x.lineTo(xx+step,yy+step); x.stroke(); }
-      if(g<80){ x.beginPath(); x.moveTo(xx+step*.5,yy); x.lineTo(xx+step*.5,yy+step); x.stroke(); }
-    }
-  }
-  x.restore();
-}
-
-function charcoalRender(x){
-  const W=srcCanvas.width,H=srcCanvas.height;
-  const im=sctx.getImageData(0,0,W,H);
-  const gray=new Float32Array(W*H);
-  for(let i=0,j=0;i<im.data.length;i+=4,j++) gray[j]=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];
-  const blur = boxBlur(gray,W,H,Math.max(5,Math.round(10-(+detail.value/20))));
-  const edge = sobel(boxBlur(gray,W,H,1),W,H);
-
-  const out=x.createImageData(W,H);
-  const inkBoost = +charcoal.value/100;
-  for(let j=0;j<gray.length;j++){
-    const g=gray[j], b=blur[j];
-    let v = 255 - (255-g)*0.58 - (255-b)*0.36*inkBoost;
-    const e = Math.min(1, edge[j]/150);
-    v -= e*55*(+detail.value/100);
-    v = Math.max(12, Math.min(255, v));
-    const k=j*4;
-    out.data[k]=out.data[k+1]=out.data[k+2]=v;
-    out.data[k+3]=255;
-  }
-  x.putImageData(out,0,0);
-
-  // tonal hatching
-  addHatchingFromTones(x, Math.max(6,14-Math.round(+charcoal.value/15)), .08 + (+charcoal.value/900));
-  // dark contour suggestion
-  overlayEdges(x, .88 - (+detail.value-70)/300, 1.2, .25 + (+detail.value/500));
-  // paper tooth
-  addPaperNoise(x, .05 + (+charcoal.value/2500));
-}
-function addPaperNoise(x,alpha=.06){
-  const W=srcCanvas.width,H=srcCanvas.height;
-  x.save(); x.globalAlpha=alpha; x.fillStyle="#000";
-  for(let y=0;y<H;y+=3){
-    for(let z=0;z<W;z+=3){
-      if(((z*17+y*13)%19)===0) x.fillRect(z,y,1,1);
-    }
-  }
-  x.restore();
-}
-function addCrossContourHatching(x){
-  if(!face) return;
-  x.save();
-  x.strokeStyle="rgba(32,28,24,.12)";
-  x.lineWidth=1;
-  const box=boxOfIndices(face,FACE_OVAL);
-  const left=box.x+box.w*.18, right=box.x+box.w*.82;
-  for(let yy=box.y+box.h*.14; yy<box.y+box.h*.88; yy+=10){
-    x.beginPath();
-    x.moveTo(left, yy + Math.sin((yy-box.y)/28)*4);
-    x.bezierCurveTo(left+box.w*.22, yy-8, right-box.w*.22, yy+8, right, yy + Math.sin((yy-box.y)/26)*4);
-    x.stroke();
-  }
-  x.restore();
-}
-
-function boxBlur(arr,W,H,r){
-  const t=new Float32Array(arr.length), o=new Float32Array(arr.length);
-  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-    let s=0,n=0; for(let k=-r;k<=r;k++){const xx=x+k; if(xx>=0&&xx<W){s+=arr[y*W+xx]; n++;}} t[y*W+x]=s/n;
-  }
-  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-    let s=0,n=0; for(let k=-r;k<=r;k++){const yy=y+k; if(yy>=0&&yy<H){s+=t[yy*W+x]; n++;}} o[y*W+x]=s/n;
-  }
-  return o;
-}
-function sobel(g,W,H){
-  const o=new Float32Array(g.length);
-  for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
-    const a=(yy,xx)=>g[yy*W+xx];
-    const gx=-a(y-1,x-1)+a(y-1,x+1)-2*a(y,x-1)+2*a(y,x+1)-a(y+1,x-1)+a(y+1,x+1);
-    const gy=-a(y-1,x-1)-2*a(y-1,x)-a(y-1,x+1)+a(y+1,x-1)+2*a(y+1,x)+a(y+1,x+1);
-    o[y*W+x]=Math.hypot(gx,gy);
-  }
-  return o;
-}
-
-function updateAnalysis(){
-  const spans=[...metrics.querySelectorAll("span")];
-  const mode = face ? "پرتره/چهره" : pose ? "فیگور" : "سوژه عمومی";
-  spans[0].textContent=mode;
-  spans[1].textContent=face ? "تشخیص شد" : "پیدا نشد";
-  spans[2].textContent=pose ? "تشخیص شد" : "پیدا نشد";
-
-  if(face){
-    const eyeL=avg(points(face,LEFT_EYE)), eyeR=avg(points(face,RIGHT_EYE));
-    const box=boxOfIndices(face,FACE_OVAL);
-    const eyeAng=(Math.atan2(eyeR.y-eyeL.y, eyeR.x-eyeL.x)*180/Math.PI).toFixed(1);
-    spans[3].textContent=`${eyeAng}°`;
-    spans[4].textContent=`${(box.h/box.w).toFixed(2)} : 1`;
-    const shadowRegions = buildFaceShadowRegions(face);
-    const avgShadow = shadowRegions.reduce((s,r)=>s+shadeFromRegion(r.sample),0)/shadowRegions.length;
-    spans[5].textContent=avgShadow<95 ? "تیره" : avgShadow<155 ? "متوسط" : "روشن";
-
-    teacher.innerHTML =
-      `در این عکس، ابتدا از <b>Envelope</b> و محور سر شروع کن. زاویه‌ی خط چشم حدود <b>${eyeAng} درجه</b> است؛ `+
-      `پس مرحله ۱ و ۲ باید این شیب را حفظ کنند. در مرحله ۳، چشم‌ها و بینی به‌صورت <b>حجم و صفحه</b> ساخته می‌شوند، نه فقط لبه‌ی عکس. `+
-      `مرحله ۴ توده‌های اصلی سایه را جدا می‌کند تا هنرجو بداند کجا باید تُن بدهد. مرحله ۵ سیاه‌قلم را با هاشور و تون نزدیک می‌کند، `+
-      `اما هنوز ساختار مرحله‌های ۱ تا ۳ را نگه می‌دارد؛ یعنی مثل یک استاد واقعی از ساختمان شروع می‌شود، نه از بافت.`;
-  } else if(pose){
-    spans[3].textContent="—"; spans[4].textContent="—"; spans[5].textContent="متوسط";
-    teacher.innerHTML = `این عکس بیشتر به‌صورت <b>فیگور</b> تحلیل شد. ابتدا خط ژست و محور شانه/لگن را بگیر، سپس اندام‌ها را به حجم‌های ساده تبدیل کن. `+
-    `برای سایه‌پردازی، ابتدا توده‌های بزرگ روشن و تیره را مشخص کن و آخر سر سراغ جزئیات برو.`;
-  } else {
-    spans[3].textContent="—"; spans[4].textContent="—"; spans[5].textContent="نامشخص";
-    teacher.innerHTML = `چهره یا بدن مطمئن پیدا نشد؛ با این حال مراحل بر اساس envelope، contour و shadow mass ساخته شده‌اند. برای اشیاء یا منظره‌ها، مرحله ۱ و ۲ بیشترین ارزش آموزشی را دارند.`;
-  }
-}
-function buildTabs(){
-  tabs.innerHTML="";
-  STAGES.forEach((s,i)=>{
-    const b=document.createElement("button");
-    b.className="tab"; b.textContent=`مرحله ${i+1}`;
-    b.onclick=()=>showStage(i);
-    tabs.appendChild(b);
-  });
-}
-function showStage(i){
-  if(!stages.length) return;
-  stageIndex=i;
-  const s=stages[i];
-  canvas.width=s.width; canvas.height=s.height;
-  ctx.drawImage(s,0,0);
-  stageTitle.textContent=STAGES[i][0];
-  stageDesc.textContent=STAGES[i][1];
-  stageNum.textContent=`${i+1} / 5`;
-  [...tabs.children].forEach((b,j)=>b.classList.toggle("active",j===i));
-  prevBtn.disabled=i===0; nextBtn.disabled=i===STAGES.length-1;
-}
-function saveCurrent(){
-  if(!stages.length) return;
-  const a=document.createElement("a");
-  a.download=`drawing-master-v3-stage-${stageIndex+1}.png`;
-  a.href=stages[stageIndex].toDataURL("image/png");
-  a.click();
-}
+import {FaceLandmarker,PoseLandmarker,FilesetResolver} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/+esm";
+const $=s=>document.querySelector(s),fileInput=$("#fileInput"),analyzeBtn=$("#analyzeBtn"),saveBtn=$("#saveBtn"),clearBtn=$("#clearBtn"),statusEl=$("#status"),bar=$("#bar"),refBox=$("#refBox"),hwBadge=$("#hwBadge"),faceBadge=$("#faceBadge"),poseBadge=$("#poseBadge"),modelMode=$("#modelMode"),focus=$("#focus"),paper=$("#paper"),subjectInfo=$("#subjectInfo"),lightInfo=$("#lightInfo"),likenessInfo=$("#likenessInfo"),avoidInfo=$("#avoidInfo"),teacher=$("#teacher"),rawAI=$("#rawAI"),tabs=$("#tabs"),stageTitle=$("#stageTitle"),stageDesc=$("#stageDesc"),stageNum=$("#stageNum"),lesson=$("#lesson"),canvas=$("#canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true}),prevBtn=$("#prevBtn"),nextBtn=$("#nextBtn");
+let faceLandmarker=null,poseLandmarker=null,sourceFile=null,previewURL=null,sourceImg=null,face=null,pose=null,aiPlan=null,stages=[],currentStage=0,vlmWorker=null;
+let src=document.createElement("canvas"),sctx=src.getContext("2d",{willReadFrequently:true});
+const FACE_OVAL=[10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109],LEFT_EYE=[33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246],RIGHT_EYE=[362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398],LEFT_BROW=[70,63,105,66,107,55,65,52,53,46],RIGHT_BROW=[336,296,334,293,300,285,295,282,283,276],OUTER_LIPS=[61,146,91,181,84,17,314,405,321,375,291,308,324,318,402,317,14,87,178,88,95,61],NOSE_RIDGE=[168,6,197,195,5,4,1,2],NOSE_BASE=[98,97,2,326,327],LEFT_IRIS=[468,469,470,471,472],RIGHT_IRIS=[473,474,475,476,477],POSE_EDGES=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[27,29],[29,31],[24,26],[26,28],[28,30],[30,32]];
+const DEFAULT_PLAN={subject:"سوژه",view:"نامشخص",light:"نور را از خود عکس دنبال کن",likeness:"نسبت کلی، فرم اصلی و سیلوئت",avoid:"از جزئیات زودهنگام پرهیز کن",teacher:"اول نسبت‌های بزرگ را قطعی کن، بعد حجم و سایه را اضافه کن.",stages:["Envelope و gesture کلی را با خطوط بسیار کمرنگ مشخص کن.","محورها و ساختمان اصلی را دقیق کن و جای اجزای مهم را تثبیت کن.","فرم‌ها را به حجم و plane تبدیل کن؛ هنوز texture اضافه نکن.","نور و سایه را به دو خانواده اصلی تقسیم کن و shadow mass را یکپارچه نگه دار.","لبه‌ها، نیم‌تون‌ها و جزئیات انتخابی را اضافه کن؛ همه‌ی لبه‌ها را تیره نکن."]};
+function setStatus(t,k="",p=null){statusEl.textContent=t;statusEl.className="status"+(k?" "+k:"");if(p!==null)bar.style.width=Math.max(0,Math.min(100,p))+"%"}function nextPaint(){return new Promise(r=>requestAnimationFrame(r))}function paperColor(){return paper.value==="warm"?"#fbf7ee":"#fff"}
+async function initMediaPipe(){try{const vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm");faceLandmarker=await FaceLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task",delegate:"GPU"},runningMode:"IMAGE",numFaces:3,minFaceDetectionConfidence:.45,minFacePresenceConfidence:.45});try{poseLandmarker=await PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task",delegate:"GPU"},runningMode:"IMAGE",numPoses:2})}catch{poseLandmarker=await PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task",delegate:"CPU"},runningMode:"IMAGE",numPoses:2})}setStatus("MediaPipe آماده است. عکس را انتخاب کن؛ مدل AI هنگام تحلیل بارگذاری می‌شود.","ok",0)}catch(e){console.error(e);setStatus("MediaPipe بارگذاری نشد؛ بخش AI هنوز قابل اجراست ولی خطوط هندسی دقیق محدود می‌شوند.","warn",0)}}initMediaPipe();
+fileInput.addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;sourceFile=f;if(previewURL)URL.revokeObjectURL(previewURL);previewURL=URL.createObjectURL(f);const img=new Image();img.onload=()=>{sourceImg=img;refBox.innerHTML="";const pv=img.cloneNode();pv.src=previewURL;refBox.appendChild(pv);analyzeBtn.disabled=false;setStatus("عکس آماده است. تحلیل AI در اولین اجرا مدل را دانلود می‌کند.","ok",0)};img.src=previewURL});
+clearBtn.onclick=()=>{sourceFile=null;sourceImg=null;face=null;pose=null;aiPlan=null;stages=[];currentStage=0;fileInput.value="";if(previewURL){URL.revokeObjectURL(previewURL);previewURL=null}refBox.innerHTML='<div class="placeholder">یک عکس انتخاب کن.</div>';analyzeBtn.disabled=true;saveBtn.disabled=true;tabs.innerHTML="";canvas.width=1;canvas.height=1;subjectInfo.textContent=lightInfo.textContent=likenessInfo.textContent=avoidInfo.textContent="—";rawAI.textContent="—";teacher.innerHTML="<h3>راهنمای استاد</h3>پس از تحلیل، توصیه‌ی مخصوص همین عکس اینجا نمایش داده می‌شود.";faceBadge.textContent="Face: —";poseBadge.textContent="Pose: —";hwBadge.textContent="AI: منتظر";setStatus("آماده برای عکس جدید.","ok",0)};
+analyzeBtn.onclick=analyze;saveBtn.onclick=saveCurrent;prevBtn.onclick=()=>showStage(Math.max(0,currentStage-1));nextBtn.onclick=()=>showStage(Math.min(4,currentStage+1));
+async function analyze(){if(!sourceFile||!sourceImg)return;analyzeBtn.disabled=true;saveBtn.disabled=true;setStatus("۱/۴ — آماده‌سازی تصویر و استخراج هندسه…","",8);await nextPaint();fitSource(sourceImg,1300);detectGeometry();setStatus("۲/۴ — اجرای Vision AI در مرورگر… اولین اجرا ممکن است دانلود مدل زمان‌بر باشد.","",18);aiPlan=await runAI(sourceFile).catch(err=>{console.error(err);setStatus("تحلیل AI کامل نشد؛ برنامه با Teacher Plan پیش‌فرض ادامه می‌دهد.","warn",70);return {...DEFAULT_PLAN}});setStatus("۳/۴ — تبدیل تحلیل AI به مراحل طراحی…","",78);await nextPaint();stages=[makeStage1(),makeStage2(),makeStage3(),makeStage4(),makeStage5()];setStatus("۴/۴ — آماده شد. از مرحله ۱ شروع کن.","ok",100);renderAIPlan();buildTabs();showStage(0);analyzeBtn.disabled=false;saveBtn.disabled=false}
+function fitSource(img,maxSide){const sc=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));src.width=Math.max(1,Math.round((img.naturalWidth||img.width)*sc));src.height=Math.max(1,Math.round((img.naturalHeight||img.height)*sc));sctx.clearRect(0,0,src.width,src.height);sctx.drawImage(img,0,0,src.width,src.height)}
+function detectGeometry(){face=null;pose=null;try{const fs=faceLandmarker?.detect(src)?.faceLandmarks||[];if(fs.length)face=fs.map(lm=>({lm,a:faceBox(lm).w*faceBox(lm).h})).sort((a,b)=>b.a-a.a)[0].lm}catch(e){console.warn(e)}try{pose=poseLandmarker?.detect(src)?.landmarks?.[0]||null}catch(e){console.warn(e)}faceBadge.textContent=face?"Face: دقیق":"Face: پیدا نشد";poseBadge.textContent=pose?"Pose: فعال":"Pose: پیدا نشد"}
+function ensureWorker(){if(vlmWorker)return vlmWorker;const workerCode=`import {AutoProcessor,AutoModelForVision2Seq,RawImage} from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+let processor=null,model=null,currentId=null,currentDevice=null;
+async function reset(){try{await model?.dispose?.()}catch{}processor=null;model=null;currentId=null;currentDevice=null}
+async function loadPair(id,device){if(currentId!==id||currentDevice!==device)await reset();currentId=id;currentDevice=device;if(!processor){self.postMessage({type:"progress",message:"Loading processor",pct:28});processor=await AutoProcessor.from_pretrained(id)}if(!model){self.postMessage({type:"progress",message:"Loading q4 model weights",pct:38});model=await AutoModelForVision2Seq.from_pretrained(id,{dtype:{embed_tokens:"q4",vision_encoder:"q4",decoder_model_merged:"q4"},device})}return[processor,model]}
+self.onmessage=async(e)=>{const {type,file,mode,prompt}=e.data;if(type!=="analyze")return;const hasWebGPU=!!self.navigator?.gpu;let candidates;if(mode==="lite")candidates=[["HuggingFaceTB/SmolVLM-256M-Instruct",hasWebGPU?"webgpu":"wasm"]];else if(mode==="quality")candidates=[["HuggingFaceTB/SmolVLM-500M-Instruct",hasWebGPU?"webgpu":"wasm"]];else candidates=hasWebGPU?[["HuggingFaceTB/SmolVLM-500M-Instruct","webgpu"],["HuggingFaceTB/SmolVLM-256M-Instruct","webgpu"],["HuggingFaceTB/SmolVLM-256M-Instruct","wasm"]]:[["HuggingFaceTB/SmolVLM-256M-Instruct","wasm"]];let lastErr=null;for(let n=0;n<candidates.length;n++){const[id,device]=candidates[n];try{self.postMessage({type:"info",message:"Loading "+id+" on "+device,model:id,device});const[proc,mdl]=await loadPair(id,device);self.postMessage({type:"progress",message:"Reading image",pct:52});const image=await RawImage.fromBlob(file);const messages=[{role:"user",content:[{type:"image"},{type:"text",text:prompt}]}];const text=proc.apply_chat_template(messages,{add_generation_prompt:true});const inputs=await proc(text,[image],{do_image_splitting:false});self.postMessage({type:"progress",message:"AI is analysing composition, lighting and drawing order",pct:60});const out=await mdl.generate({...inputs,max_new_tokens:220,do_sample:false});const decoded=proc.batch_decode(out.slice(null,[inputs.input_ids.dims.at(-1),null]),{skip_special_tokens:true});self.postMessage({type:"result",text:(decoded[0]||"").trim(),model:id,device});return}catch(err){lastErr=err;await reset();if(n<candidates.length-1)self.postMessage({type:"progress",message:"Primary model failed; trying lighter fallback",pct:34})}}self.postMessage({type:"error",message:lastErr?.stack||lastErr?.message||String(lastErr)})};`;
+const blob=new Blob([workerCode],{type:"text/javascript"});vlmWorker=new Worker(URL.createObjectURL(blob),{type:"module"});return vlmWorker}
+function teacherPrompt(){return `You are an academic drawing and charcoal portrait instructor. Analyze the reference image for a beginner who must reproduce THIS exact reference. Focus requested: ${focus.value}. Do not write an essay. Return exactly these 11 labeled lines in English:\nSUBJECT: main subject and crop\nVIEW: pose/view/head turn and tilt\nLIGHT: main light direction and strongest shadow side\nLIKENESS: 3 most important shapes/proportions that preserve likeness\nAVOID: the single most likely drawing mistake\nTEACHER: one concise strategic instruction\nSTAGE1: envelope, gesture and only the largest proportions\nSTAGE2: construction axes and precise placement of major features\nSTAGE3: planes/volumes; state what details must still be omitted\nSTAGE4: light family, shadow family, core/cast shadows and edge hierarchy\nSTAGE5: charcoal finish; specify selective details, soft/hard edges and texture\nBe image-specific. If this is a portrait, mention head turn, eye-line perspective, eye size relationship, nose direction, mouth placement, jaw/hair mass and lighting when visible. Never invent invisible anatomy. Avoid generic advice.`}
+function runAI(file){return new Promise((resolve,reject)=>{const w=ensureWorker(),onMsg=e=>{const d=e.data;if(d.type==="info"){hwBadge.textContent=`AI: ${d.model.includes("500M")?"500M":"256M"} / ${d.device}`;setStatus("Vision AI: "+d.message,"",24)}else if(d.type==="progress")setStatus("Vision AI: "+d.message,"",d.pct);else if(d.type==="result"){w.removeEventListener("message",onMsg);rawAI.textContent=d.text||"—";resolve(parsePlan(d.text))}else if(d.type==="error"){w.removeEventListener("message",onMsg);reject(new Error(d.message))}};w.addEventListener("message",onMsg);w.postMessage({type:"analyze",file,mode:modelMode.value,prompt:teacherPrompt()})})}
+function parsePlan(text){const plan={...DEFAULT_PLAN,stages:[...DEFAULT_PLAN.stages]},map={SUBJECT:"subject",VIEW:"view",LIGHT:"light",LIKENESS:"likeness",AVOID:"avoid",TEACHER:"teacher"};for(const line of(text||"").split(/\r?\n/)){const m=line.match(/^\s*(SUBJECT|VIEW|LIGHT|LIKENESS|AVOID|TEACHER|STAGE[1-5])\s*:\s*(.+)\s*$/i);if(!m)continue;const key=m[1].toUpperCase(),val=m[2].trim();if(key.startsWith("STAGE"))plan.stages[Number(key.slice(5))-1]=val;else plan[map[key]]=val}return plan}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}function renderAIPlan(){const p=aiPlan||DEFAULT_PLAN;subjectInfo.textContent=`${p.subject} — ${p.view}`;lightInfo.textContent=p.light;likenessInfo.textContent=p.likeness;avoidInfo.textContent=p.avoid;teacher.innerHTML=`<h3>راهنمای استاد</h3>${escapeHTML(p.teacher)}`}
+function newStage(){const c=document.createElement("canvas");c.width=src.width;c.height=src.height;const x=c.getContext("2d",{willReadFrequently:true});x.fillStyle=paperColor();x.fillRect(0,0,c.width,c.height);x.lineCap="round";x.lineJoin="round";return{c,x}}function P(lm,i){return{x:lm[i].x*src.width,y:lm[i].y*src.height}}function pts(lm,ids){return ids.filter(i=>lm[i]).map(i=>P(lm,i))}function avg(a){return{x:a.reduce((s,p)=>s+p.x,0)/a.length,y:a.reduce((s,p)=>s+p.y,0)/a.length}}function box(a){return{x:Math.min(...a.map(p=>p.x)),y:Math.min(...a.map(p=>p.y)),w:Math.max(...a.map(p=>p.x))-Math.min(...a.map(p=>p.x)),h:Math.max(...a.map(p=>p.y))-Math.min(...a.map(p=>p.y))}}function faceBox(lm){return box(pts(lm,FACE_OVAL))}
+function path(x,lm,ids,color,w=1.2,close=false,d=[]){const a=pts(lm,ids);if(a.length<2)return;x.save();x.strokeStyle=color;x.lineWidth=w;x.setLineDash(d);x.beginPath();x.moveTo(a[0].x,a[0].y);for(let i=1;i<a.length;i++)x.lineTo(a[i].x,a[i].y);if(close)x.closePath();x.stroke();x.restore()}function line(x,a,b,color,w=1,d=[]){x.save();x.strokeStyle=color;x.lineWidth=w;x.setLineDash(d);x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();x.restore()}function poly(x,a,color,w=1,fill=null,close=true,d=[]){if(a.length<2)return;x.save();x.strokeStyle=color;x.lineWidth=w;x.setLineDash(d);x.beginPath();x.moveTo(a[0].x,a[0].y);for(let i=1;i<a.length;i++)x.lineTo(a[i].x,a[i].y);if(close)x.closePath();if(fill){x.fillStyle=fill;x.fill()}x.stroke();x.restore()}function ellipsePts(x,a,color,w=1,d=[]){const b=box(a);x.save();x.strokeStyle=color;x.lineWidth=w;x.setLineDash(d);x.beginPath();x.ellipse(b.x+b.w/2,b.y+b.h/2,b.w/2,b.h/2,0,0,Math.PI*2);x.stroke();x.restore()}
+function makeStage1(){const{c,x}=newStage();if(face){const b=faceBox(face),center={x:b.x+b.w/2,y:b.y+b.h/2};x.save();x.strokeStyle="#987f65";x.lineWidth=Math.max(1.2,c.width/900);x.setLineDash([10,8]);x.beginPath();x.ellipse(center.x,center.y,b.w*.52,b.h*.52,0,0,Math.PI*2);x.stroke();x.restore();const l=avg(pts(face,LEFT_EYE)),r=avg(pts(face,RIGHT_EYE));line(x,{x:l.x-b.w*.32,y:l.y},{x:r.x+b.w*.32,y:r.y},"#b2a08d",1,[8,7]);path(x,face,[10,9,168,6,197,195,5,4,1,2,0,17,152],"#b2a08d",1,false,[8,7]);path(x,face,FACE_OVAL,"#9b8268",1.1,true,[6,6])}if(pose)drawPose(x,false);if(!face&&!pose)overlayEdges(x,.96,4,.16);return c}
+function makeStage2(){const{c,x}=newStage();if(face){const b=faceBox(face),center={x:b.x+b.w/2,y:b.y+b.h/2};x.save();x.strokeStyle="#8f775f";x.lineWidth=1.1;x.setLineDash([8,7]);x.beginPath();x.ellipse(center.x,center.y,b.w*.51,b.h*.51,0,0,Math.PI*2);x.stroke();x.restore();path(x,face,FACE_OVAL,"#665447",1.3,true);path(x,face,LEFT_BROW,"#7d6855",1.05);path(x,face,RIGHT_BROW,"#7d6855",1.05);ellipsePts(x,pts(face,LEFT_EYE),"#7c6653",1.1);ellipsePts(x,pts(face,RIGHT_EYE),"#7c6653",1.1);path(x,face,NOSE_RIDGE,"#7b6755",1.05);path(x,face,NOSE_BASE,"#7b6755",1.05);ellipsePts(x,pts(face,OUTER_LIPS),"#7c6653",1.05)}if(pose)drawPose(x,true);return c}
+function makeStage3(){const{c,x}=newStage();if(face){path(x,face,FACE_OVAL,"#362f29",1.5,true);path(x,face,LEFT_EYE,"#352e28",1.2,true);path(x,face,RIGHT_EYE,"#352e28",1.2,true);path(x,face,LEFT_IRIS,"#625345",.8,true);path(x,face,RIGHT_IRIS,"#625345",.8,true);path(x,face,LEFT_BROW,"#54463a",1.1);path(x,face,RIGHT_BROW,"#54463a",1.1);const noseTop=P(face,6),tip=P(face,1),nl=P(face,98),nr=P(face,327);poly(x,[noseTop,nl,tip,nr],"#806c59",1.1,"rgba(214,201,182,.13)");path(x,face,NOSE_RIDGE,"#655447",1.0);path(x,face,NOSE_BASE,"#655447",1.0);const ml=P(face,61),mr=P(face,291),mt=P(face,0),mb=P(face,17);poly(x,[ml,mt,mr,mb],"#806b58",1.0,"rgba(218,205,188,.10)");path(x,face,OUTER_LIPS,"#4c3e34",1.05,true);poly(x,[P(face,234),avg(pts(face,LEFT_EYE)),nl,ml,P(face,172)],"#9d876f",.9,null,false);poly(x,[P(face,454),avg(pts(face,RIGHT_EYE)),nr,mr,P(face,397)],"#9d876f",.9,null,false)}else overlayEdges(x,.84,2,.55);return c}
+function makeStage4(){const{c,x}=newStage();posterize(x,5);if(face){for(const r of faceRegions()){const g=avgGray(r.sample);poly(x,r.shape,"rgba(110,90,70,.25)",.7,`rgba(60,55,50,${Math.max(.05,(210-g)/420)})`)}path(x,face,LEFT_EYE,"#3a322b",1.0,true);path(x,face,RIGHT_EYE,"#3a322b",1.0,true);path(x,face,OUTER_LIPS,"#4a3c32",.95,true)}else hatchTones(x,12,.14);return c}
+function makeStage5(){const{c,x}=newStage();charcoalRender(x);if(face){path(x,face,LEFT_EYE,"rgba(35,30,26,.88)",1.0,true);path(x,face,RIGHT_EYE,"rgba(35,30,26,.88)",1.0,true);path(x,face,OUTER_LIPS,"rgba(45,37,31,.8)",.9,true);path(x,face,FACE_OVAL,"rgba(43,37,32,.65)",.9,true)}return c}
+function drawPose(x,strong){const p=i=>({x:pose[i].x*src.width,y:pose[i].y*src.height}),vis=i=>(pose[i].visibility??1)>.3,col=strong?"#514338":"#9b836a",w=strong?1.7:1.2;POSE_EDGES.forEach(([a,b])=>{if(vis(a)&&vis(b))line(x,p(a),p(b),col,w,strong?[]:[7,5])})}
+function faceRegions(){const eyeL=avg(pts(face,LEFT_EYE)),eyeR=avg(pts(face,RIGHT_EYE)),nl=P(face,98),nr=P(face,327),tip=P(face,1),nt=P(face,6),ml=P(face,61),mr=P(face,291),mt=P(face,0),mb=P(face,17);return[{shape:[P(face,70),P(face,55),eyeL,P(face,123),P(face,50)],sample:[eyeL,P(face,50)]},{shape:[P(face,285),P(face,300),eyeR,P(face,352),P(face,280)],sample:[eyeR,P(face,280)]},{shape:[nt,nl,tip,nr],sample:[tip,nl,nr]},{shape:[P(face,234),eyeL,nl,ml,P(face,172)],sample:[P(face,234),nl,ml]},{shape:[P(face,454),eyeR,nr,mr,P(face,397)],sample:[P(face,454),nr,mr]},{shape:[ml,mt,mr,mb],sample:[ml,mt,mb]}]}
+function pixelGray(xx,yy){const d=sctx.getImageData(Math.max(0,Math.min(src.width-1,Math.round(xx))),Math.max(0,Math.min(src.height-1,Math.round(yy))),1,1).data;return.299*d[0]+.587*d[1]+.114*d[2]}function avgGray(a){return a.reduce((s,p)=>s+pixelGray(p.x,p.y),0)/a.length}
+function posterize(x,levels){const im=sctx.getImageData(0,0,src.width,src.height),out=x.createImageData(src.width,src.height),step=255/(levels-1);for(let i=0;i<im.data.length;i+=4){const g=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2],q=Math.round(g/step)*step;out.data[i]=out.data[i+1]=out.data[i+2]=q;out.data[i+3]=255}x.putImageData(out,0,0)}
+function hatchTones(x,step=12,a=.12){x.save();x.strokeStyle=`rgba(30,27,24,${a})`;x.lineWidth=1;for(let y=0;y<src.height;y+=step)for(let z=0;z<src.width;z+=step){const g=pixelGray(z,y);if(g<170){x.beginPath();x.moveTo(z,y+step);x.lineTo(z+step,y);x.stroke()}if(g<100){x.beginPath();x.moveTo(z,y);x.lineTo(z+step,y+step);x.stroke()}}x.restore()}
+function charcoalRender(x){const W=src.width,H=src.height,im=sctx.getImageData(0,0,W,H),gray=new Float32Array(W*H);for(let i=0,j=0;i<im.data.length;i+=4,j++)gray[j]=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];const blur=boxBlur(gray,W,H,6),edge=sobel(boxBlur(gray,W,H,1),W,H),out=x.createImageData(W,H);for(let j=0;j<gray.length;j++){let v=255-(255-gray[j])*.60-(255-blur[j])*.35-Math.min(50,edge[j]*.32);v=Math.max(12,Math.min(255,v));const k=j*4;out.data[k]=out.data[k+1]=out.data[k+2]=v;out.data[k+3]=255}x.putImageData(out,0,0);hatchTones(x,9,.09);overlayEdges(x,.90,1,.25)}
+function overlayEdges(x,percentile=.9,blurR=1,alpha=.3){const W=src.width,H=src.height,im=sctx.getImageData(0,0,W,H),g=new Float32Array(W*H);for(let i=0,j=0;i<im.data.length;i+=4,j++)g[j]=.299*im.data[i]+.587*im.data[i+1]+.114*im.data[i+2];const e=sobel(boxBlur(g,W,H,Math.max(1,Math.round(blurR))),W,H),s=[];for(let i=0;i<e.length;i+=Math.max(1,Math.floor(e.length/40000)))s.push(e[i]);s.sort((a,b)=>a-b);const th=s[Math.floor(s.length*percentile)]||30;x.save();x.globalAlpha=alpha;x.strokeStyle="#332d27";x.lineWidth=1;for(let y=1;y<H-1;y++){x.beginPath();let on=false;for(let z=1;z<W-1;z++){if(e[y*W+z]>th){if(!on){x.moveTo(z,y);on=true}else x.lineTo(z,y)}else on=false}x.stroke()}x.restore()}
+function boxBlur(a,W,H,r){const t=new Float32Array(a.length),o=new Float32Array(a.length);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let s=0,n=0;for(let k=-r;k<=r;k++){const q=x+k;if(q>=0&&q<W){s+=a[y*W+q];n++}}t[y*W+x]=s/n}for(let y=0;y<H;y++)for(let x=0;x<W;x++){let s=0,n=0;for(let k=-r;k<=r;k++){const q=y+k;if(q>=0&&q<H){s+=t[q*W+x];n++}}o[y*W+x]=s/n}return o}function sobel(g,W,H){const o=new Float32Array(g.length);for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const a=(yy,xx)=>g[yy*W+xx],gx=-a(y-1,x-1)+a(y-1,x+1)-2*a(y,x-1)+2*a(y,x+1)-a(y+1,x-1)+a(y+1,x+1),gy=-a(y-1,x-1)-2*a(y-1,x)-a(y-1,x+1)+a(y+1,x-1)+2*a(y+1,x)+a(y+1,x+1);o[y*W+x]=Math.hypot(gx,gy)}return o}
+function buildTabs(){tabs.innerHTML="";for(let i=0;i<5;i++){const b=document.createElement("button");b.className="tab";b.textContent=`مرحله ${i+1}`;b.onclick=()=>showStage(i);tabs.appendChild(b)}}function showStage(i){if(!stages.length)return;currentStage=i;canvas.width=stages[i].width;canvas.height=stages[i].height;ctx.drawImage(stages[i],0,0);const names=["Envelope & Gesture","Construction","Planes & Volumes","Shadow Map","Final Charcoal"];stageTitle.textContent=`مرحله ${i+1} — ${names[i]}`;stageDesc.textContent=(aiPlan||DEFAULT_PLAN).stages[i];stageNum.textContent=`${i+1} / 5`;lesson.innerHTML=`<b>درس این مرحله:</b> ${escapeHTML((aiPlan||DEFAULT_PLAN).stages[i])}`;[...tabs.children].forEach((b,j)=>b.classList.toggle("active",j===i));prevBtn.disabled=i===0;nextBtn.disabled=i===4}function saveCurrent(){if(!stages.length)return;const a=document.createElement("a");a.download=`drawing-master-v4-stage-${currentStage+1}.png`;a.href=stages[currentStage].toDataURL("image/png");a.click()}
 </script>
 </body>
 </html>
